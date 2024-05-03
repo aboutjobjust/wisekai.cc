@@ -1,5 +1,5 @@
 {
-  "name": "",
+  "name": "wisekai.cc",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
@@ -7,11 +7,25 @@
     "start": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "prettier": "prettier --write 'src/**/*.{ts,astro,scss}'"
   },
   "dependencies": {
-    "astro": "^4.7.1",
     "@astrojs/check": "^0.5.10",
+    "@astrojs/mdx": "^2.3.1",
+    "@astrojs/svelte": "^5.4.0",
+    "@astrojs/tailwind": "^5.1.0",
+    "astro": "^4.7.1",
+    "astro-purgecss": "^4.1.1",
+    "prettier-plugin-organize-imports": "^3.2.4",
+    "purgecss": "^6.0.0",
+    "svelte": "^4.2.15",
+    "tailwindcss": "^3.4.3",
     "typescript": "^5.4.5"
+  },
+  "devDependencies": {
+    "prettier": "^3.2.5",
+    "prettier-plugin-astro": "^0.13.0",
+    "prettier-plugin-tailwindcss": "^0.5.14"
   }
 }
