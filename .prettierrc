@@ -8,7 +8,11 @@
   "arrowParens": "always",
   "printWidth": 80,
   "bracketSpacing": true,
-  "plugins": ["prettier-plugin-astro", "prettier-plugin-organize-imports"],
+  "plugins": [
+    "prettier-plugin-astro",
+    "prettier-plugin-organize-imports",
+    "prettier-plugin-tailwindcss"
+  ],
   "overrides": [
     {
       "files": "*.html",
