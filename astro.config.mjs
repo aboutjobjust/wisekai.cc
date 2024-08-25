@@ -1,13 +1,13 @@
-import svelte from '@astrojs/svelte'
-import tailwind from '@astrojs/tailwind'
-import purgecss from 'astro-purgecss'
-import { defineConfig } from 'astro/config'
-
-import mdx from '@astrojs/mdx'
+import mdx from '@astrojs/mdx';
+import solidJs from '@astrojs/solid-js';
+import tailwind from '@astrojs/tailwind';
+import icon from 'astro-icon';
+import purgecss from 'astro-purgecss';
+import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://wisekai.cc',
   trailingSlash: 'always',
-  integrations: [tailwind(), svelte(), purgecss(), mdx()],
-})
+  integrations: [tailwind(), purgecss(), mdx(), solidJs(), icon()],
+});

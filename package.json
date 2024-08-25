@@ -11,19 +11,23 @@
     "prettier": "prettier --write 'src/**/*.{ts,astro,scss}'"
   },
   "dependencies": {
-    "@astrojs/check": "^0.5.10",
-    "@astrojs/mdx": "^2.3.1",
-    "@astrojs/svelte": "^5.4.0",
+    "@astrojs/check": "^0.9.2",
+    "@astrojs/mdx": "^3.1.3",
+    "@astrojs/solid-js": "^4.4.1",
     "@astrojs/tailwind": "^5.1.0",
-    "astro": "^4.7.1",
+    "astro": "^4.14.2",
+    "astro-icon": "^1.1.1",
     "astro-purgecss": "^4.1.1",
+    "dialog-polyfill": "^0.5.6",
     "prettier-plugin-organize-imports": "^3.2.4",
     "purgecss": "^6.0.0",
-    "svelte": "^4.2.15",
-    "tailwindcss": "^3.4.3",
+    "solid-js": "^1.8.21",
+    "tailwindcss": "^3.4.10",
     "typescript": "^5.4.5"
   },
   "devDependencies": {
+    "@iconify-icon/solid": "^2.1.1",
+    "@iconify-json/material-symbols": "^1.1.89",
     "prettier": "^3.2.5",
     "prettier-plugin-astro": "^0.13.0",
     "prettier-plugin-tailwindcss": "^0.5.14"

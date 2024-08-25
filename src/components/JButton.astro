@@ -1,0 +1,83 @@
+---
+import 'dialog-polyfill/dialog-polyfill.css';
+import { Icon } from 'astro-icon/components';
+---
+
+<div class="mb-1 inline-block" data-j-btn>
+  <button class="rounded-md border-2 border-gray-400 px-2 py-2" data-j-btn>
+    <slot />
+  </button>
+  <dialog class="border-t-4 py-5" data-j-btn>
+    <div class="flex items-center justify-between">
+      <div aria-hidden="true"></div>
+      <div class="bar-container">
+        <a class="inline-flex items-center gap-3 text-lg" href="#">
+          <slot />
+          <Icon aria-label="元動画へ遷移" class="h-6 w-6" name="material-symbols:open-in-new" />
+        </a>
+      </div>
+      <form method="dialog" class="inline-block">
+        <button aria-label="閉じる">
+          <Icon class="h-12 w-12 text-gray-500" aria-hidden="true" name="material-symbols:close-rounded" />
+        </button>
+      </form>
+      <audio src="https://soundeffect-lab.info/sound/voice/mp3/info-girl1/info-girl1-omedetougozaimasu1.mp3" data-j-btn
+      ></audio>
+    </div>
+  </dialog>
+</div>
+
+<style>
+  dialog {
+    position: fixed;
+    margin: 0;
+    bottom: 0;
+    width: 100vw;
+    border: 0;
+    box-shadow: 0px -15px 30px 0px #ccc;
+  }
+  .bar-container {
+    width: min(64rem, 100%);
+  }
+</style>
+
+<script>
+  // ブラウザがdialog要素非対応の場合のみpolyfillを読み込み
+  if (!window.HTMLDialogElement) {
+    const dialogs = document.querySelectorAll<HTMLDialogElement>('dialog');
+    const dialogPolyfill = await import('dialog-polyfill');
+    dialogs.forEach((dialog) => {
+      dialogPolyfill.default.registerDialog(dialog);
+    });
+  }
+
+  const closeAllDialog = () => {
+    document
+      .querySelectorAll<HTMLDialogElement>('dialog[data-j-btn][open]')
+      .forEach((openDialog) => openDialog.close());
+  };
+
+  const jBtnWrappers = document.querySelectorAll<HTMLDivElement>('div[data-j-btn]');
+
+  jBtnWrappers.forEach((jBtnWrapper) => {
+    const button = jBtnWrapper.querySelector<HTMLButtonElement>('button[data-j-btn]');
+    const dialog = jBtnWrapper.querySelector<HTMLDialogElement>('dialog[data-j-btn]');
+    const audio = jBtnWrapper.querySelector<HTMLAudioElement>('audio[data-j-btn]');
+
+    if (!button || !dialog || !audio) return;
+
+    button.addEventListener('click', () => {
+      closeAllDialog();
+      dialog.show();
+      setTimeout(() => {
+        audio.currentTime = 0;
+        audio.play();
+      }, 1);
+    });
+
+    dialog.addEventListener('close', () => {
+      audio.pause();
+      audio.currentTime = 0;
+    });
+  });
+</script>
