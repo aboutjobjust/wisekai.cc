@@ -1,6 +1,9 @@
 ---
 import 'dialog-polyfill/dialog-polyfill.css';
 import { JButtonList } from '@components/JButton';
+import Header from '@components/Header.astro';
+import Footer from '@components/Footer.astro';
+import JInfoBox from '@components/JInfoBox.astro';
 ---
 
 <html lang="ja">
@@ -12,71 +15,22 @@ import { JButtonList } from '@components/JButton';
     <title>Astro</title>
   </head>
   <body>
-    <header class="mb-10 border-b-2 border-gray-300 shadow-lg">
-      <div class="mx-auto max-w-5xl px-2">
-        <a class="inline-flex items-center gap-3 py-3 text-2xl text-gray-600" href="/">
-          <span class="inline-block h-12 w-12 rounded-full bg-blue-400"></span>
-          ヰ世界ボタン
-        </a>
-      </div>
-    </header>
+    <Header />
     <main class="mx-auto max-w-5xl px-2">
       <h1 class="mb-3 text-xl font-bold text-gray-600">ボタン一覧</h1>
       <JButtonList client:load />
-
-      <aside class="mt-20 flex justify-center gap-5 rounded-md border border-gray-300 p-5 shadow-md">
-        <div>
-          <figure class="flex flex-col items-center gap-2">
-            <img
-              class="rounded-full"
-              src="https://pbs.twimg.com/profile_images/1778056393989427200/mGcSsWL6_400x400.jpg"
-              width="200"
-              height="200"
-              alt=""
-            />
-            <figcaption class="text-center font-sans font-bold text-sky-600">ヰ世界情緒 /<br />isekaijoucho</figcaption>
-          </figure>
-          <div class="pt-4">
-            <p>
-              自らの歌と創作で世界を表現することを夢見る、バーチャルダークシンガー。<br />
-              力強く儚い歌声で、”ヰ世界情緒”というキャンバスの上に闇と光、新しい物語を紡ぐ。
-            </p>
-            <p>
-              シンガーとしてだけでなく、イラスト、ナレーション、声優など様々な方面で自らの表現をおこない、作品を創り出す、唯一無二のクリエイター。
-            </p>
-          </div>
-        </div>
-        <div class="h-[600px] w-[500px] max-w-full flex-shrink-0">
-          <a
-            class="twitter-timeline"
-            data-lang="ja"
-            data-width="500"
-            data-height="600"
-            href="https://twitter.com/isekaijoucho?ref_src=twsrc%5Etfw"
-          >
-            Tweets by isekaijoucho
-          </a>
-          <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-        </div>
-      </aside>
+      <JInfoBox />
     </main>
-    <footer class="mt-10 bg-slate-500 text-gray-100">
-      <div class="py-15 mx-auto max-w-5xl px-5 pb-20 pt-10">
-        <ul class="flex justify-center gap-8 [&_a:hover]:underline">
-          <li><a href="#">サイトポリシー</a></li>
-          <li><a href="#">このサイトについて</a></li>
-          <li><a href="#">コンタクト</a></li>
-        </ul>
-        <div class="flex justify-center py-10">
-          <small>Copyright &copy; isekaijoucho. All rights reserved.</small>
-        </div>
-      </div>
-    </footer>
+    <Footer />
   </body>
 </html>
 
 <style is:global>
   html {
     scrollbar-gutter: stable;
+  }
+
+  p + p {
+    margin-top: 1.5em;
   }
 </style>

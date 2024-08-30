@@ -25,7 +25,7 @@ const genRndStr = (): string => {
 
 /*========== JButtonList ==========*/
 export const JButtonList: Component = () => {
-  const btns = [...Array(100)].map((_) => genRndStr());
+  const btns = [...Array(400)].map((_) => genRndStr());
   const [filterdBtns, setFilterdBtns] = createSignal(btns);
 
   const handleInput = ({
