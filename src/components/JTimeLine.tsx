@@ -11,16 +11,15 @@ export const JTimeLine: Component = () => {
   });
 
   return (
-    <div class="h-[600px] w-[500px] max-w-full flex-shrink-0">
+    <div class="max-w-full flex-shrink-0">
       <a
-        class="twitter-timeline"
+        class="twitter-timeline block h-[600px] w-[500px]"
         data-lang="ja"
         data-width="500"
         data-height="600"
+        aria-label="Tweets by isekaijoucho"
         href="https://twitter.com/isekaijoucho?ref_src=twsrc%5Etfw"
-      >
-        Tweets by isekaijoucho
-      </a>
+      ></a>
     </div>
   );
 };

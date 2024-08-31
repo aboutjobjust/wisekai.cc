@@ -29,12 +29,16 @@ const genRndStr = (): string => {
 type JButtonListProps = {
   buttonList: CollectionEntry<'voice'>[];
 };
-export const JButtonList: Component = () => {
-  const btns = [...Array(400)].map((_) => genRndStr());
+export const JButtonList: Component<JButtonListProps> = (props) => {
+  // const btns = [...Array(400)].map((_) => genRndStr());
 
-  const firstArr = btns.map((text) => {
+  const dummy = Array(20)
+    .fill(props.buttonList)
+    .flat() as CollectionEntry<'voice'>[];
+
+  const firstArr = dummy.map((button) => {
     return {
-      text,
+      button,
       hidden: false,
     };
   });
@@ -50,8 +54,8 @@ export const JButtonList: Component = () => {
   }) => {
     if (!currentTarget.checkValidity()) return;
     const newObj = storeBtns.list.map((item) => ({
-      text: item.text,
-      hidden: !item.text.includes(currentTarget.value),
+      button: item.button,
+      hidden: !item.button.data.ruby.includes(currentTarget.value),
     }));
     setStoreBtns('list', reconcile(newObj));
   };
@@ -77,7 +81,7 @@ export const JButtonList: Component = () => {
         <For each={storeBtns.list}>
           {(storeBtn) => (
             <div style={{ display: storeBtn.hidden ? 'none' : 'inline-block' }}>
-              <JButton2 text={storeBtn.text} />
+              <JButton2 button={storeBtn.button} />
             </div>
           )}
         </For>
@@ -88,11 +92,12 @@ export const JButtonList: Component = () => {
 
 /*========== JButton2 ==========*/
 type JButton2Props = {
-  text: string;
+  button: CollectionEntry<'voice'>;
 };
 export const JButton2: Component<JButton2Props> = (props) => {
   let dialog!: HTMLDialogElement;
   let audio!: HTMLAudioElement;
+  const btnData = props.button.data;
 
   const closeAllDialog = () => {
     document
@@ -124,7 +129,7 @@ export const JButton2: Component<JButton2Props> = (props) => {
         class="w-full rounded-md border-2 border-gray-200 px-2 py-2 text-left shadow-md hover:bg-gray-200"
         onClick={handleButtonClick}
       >
-        {props.text}
+        {btnData.text}
       </button>
       <dialog
         class="bottom-0 mb-0 w-full border-none py-5 shadow-lg"
@@ -136,7 +141,7 @@ export const JButton2: Component<JButton2Props> = (props) => {
           <CloseButton />
           <div class="flex items-center gap-5">
             <AudioControl ref={(el) => (audio = el)} />
-            <MoreDetailModal />
+            <a href={`/voice/${props.button.slug}/`}>{btnData.text}</a>
           </div>
         </div>
       </dialog>
@@ -205,62 +210,8 @@ const AudioControl: Component<AudioControlProps> = (props) => {
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
         onEnded={() => setIsPlaying(false)}
+        muted
       />
-    </>
-  );
-};
-
-const MoreDetailModal: Component = () => {
-  let modal!: HTMLDialogElement;
-  let body!: HTMLBodyElement;
-  const [isNeedPolyfill, setIsNeedPolyfill] = createSignal(false);
-  const [isFirstShow, setIsFirstShow] = createSignal(false);
-
-  const handleButtonClick = () => {
-    setIsFirstShow(true);
-    modal.showModal();
-    body.style.overflow = 'hidden';
-  };
-
-  const handleModalClick = (event: Event) => {
-    if (event.target === modal) {
-      modal.close();
-    }
-  };
-
-  onMount(() => {
-    loadDialogPolyfill(modal);
-    setIsNeedPolyfill(!window.HTMLDialogElement);
-    body = document.querySelector<HTMLBodyElement>('body')!;
-  });
-
-  return (
-    <>
-      <button onClick={handleButtonClick}>hogehoge</button>
-      <dialog
-        class="border-none p-0"
-        classList={{ fixed: isNeedPolyfill() }}
-        style={{ position: 'fixed' }}
-        onClick={handleModalClick}
-        onClose={() => (body.style.overflow = 'auto')}
-        ref={modal}
-      >
-        <div class="flex justify-end">
-          <CloseButton />
-        </div>
-        <Show when={isFirstShow()}>
-          <iframe
-            class="max-w-full"
-            width="560"
-            height="315"
-            src="https://www.youtube.com/embed/kZpPtk3LQo0"
-            title="YouTube video player"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerpolicy="strict-origin-when-cross-origin"
-            allowfullscreen
-          ></iframe>
-        </Show>
-      </dialog>
     </>
   );
 };

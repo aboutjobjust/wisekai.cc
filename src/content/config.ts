@@ -7,6 +7,7 @@ const voiceCollection = defineCollection({
   schema: z.object({
     text: z.string(),
     ruby: z.string().regex(kana),
+    ytid: z.string(),
     start: z.number(),
     during: z.number(),
   }),
