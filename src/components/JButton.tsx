@@ -1,6 +1,8 @@
 import { Icon } from '@iconify-icon/solid';
-import type { Component, ParentProps } from 'solid-js';
+import type { CollectionEntry } from 'astro:content';
+import type { Component } from 'solid-js';
 import { For, Show, createSignal, onMount } from 'solid-js';
+import { createStore, reconcile } from 'solid-js/store';
 
 const loadDialogPolyfill = async (dialog: HTMLDialogElement) => {
   if (!window.HTMLDialogElement) {
@@ -24,9 +26,22 @@ const genRndStr = (): string => {
 };
 
 /*========== JButtonList ==========*/
+type JButtonListProps = {
+  buttonList: CollectionEntry<'voice'>[];
+};
 export const JButtonList: Component = () => {
   const btns = [...Array(400)].map((_) => genRndStr());
-  const [filterdBtns, setFilterdBtns] = createSignal(btns);
+
+  const firstArr = btns.map((text) => {
+    return {
+      text,
+      hidden: false,
+    };
+  });
+
+  const [storeBtns, setStoreBtns] = createStore({
+    list: firstArr,
+  });
 
   const handleInput = ({
     currentTarget,
@@ -34,10 +49,13 @@ export const JButtonList: Component = () => {
     currentTarget: HTMLInputElement;
   }) => {
     if (!currentTarget.checkValidity()) return;
-    const arr = btns.filter((item) => item.includes(currentTarget.value));
-    setFilterdBtns(arr);
+    const newObj = storeBtns.list.map((item) => ({
+      text: item.text,
+      hidden: !item.text.includes(currentTarget.value),
+    }));
+    setStoreBtns('list', reconcile(newObj));
   };
-
+  //
   return (
     <>
       <label class="flex items-center gap-2">
@@ -56,14 +74,23 @@ export const JButtonList: Component = () => {
         />
       </label>
       <div class="mt-4 flex flex-col flex-wrap gap-2 sm:flex-row">
-        <For each={filterdBtns()}>{(str) => <JButton2>{str}</JButton2>}</For>
+        <For each={storeBtns.list}>
+          {(storeBtn) => (
+            <div style={{ display: storeBtn.hidden ? 'none' : 'inline-block' }}>
+              <JButton2 text={storeBtn.text} />
+            </div>
+          )}
+        </For>
       </div>
     </>
   );
 };
 
 /*========== JButton2 ==========*/
-export const JButton2: Component<ParentProps> = (props) => {
+type JButton2Props = {
+  text: string;
+};
+export const JButton2: Component<JButton2Props> = (props) => {
   let dialog!: HTMLDialogElement;
   let audio!: HTMLAudioElement;
 
@@ -92,12 +119,12 @@ export const JButton2: Component<ParentProps> = (props) => {
   });
 
   return (
-    <div class="inline-block">
+    <>
       <button
         class="w-full rounded-md border-2 border-gray-200 px-2 py-2 text-left shadow-md hover:bg-gray-200"
         onClick={handleButtonClick}
       >
-        {props.children}
+        {props.text}
       </button>
       <dialog
         class="bottom-0 mb-0 w-full border-none py-5 shadow-lg"
@@ -113,7 +140,7 @@ export const JButton2: Component<ParentProps> = (props) => {
           </div>
         </div>
       </dialog>
-    </div>
+    </>
   );
 };
 

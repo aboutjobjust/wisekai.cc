@@ -9,5 +9,19 @@ import { defineConfig } from 'astro/config';
 export default defineConfig({
   site: 'https://wisekai.cc',
   trailingSlash: 'always',
-  integrations: [tailwind(), purgecss(), mdx(), solidJs(), icon()],
+  integrations: [
+    tailwind(),
+    purgecss({
+      extractors: [
+        {
+          extractor: (content) =>
+            content.match(/[^<>"'`\s]*[^<>"'`\s:]/g) || [],
+          extensions: ['astro', 'tsx', 'html'],
+        },
+      ],
+    }),
+    mdx(),
+    solidJs(),
+    icon(),
+  ],
 });
