@@ -6,8 +6,10 @@ import JInfoBox from '@components/JInfoBox.astro';
 import Footer from '@components/Footer.astro';
 
 import { getCollection } from 'astro:content';
+import { uploadR2 } from 'src/lib/genVoice';
 
 const allVoice = await getCollection('voice');
+
 const tagList = ['鳴き声', 'あいさつ', '食べ物', '地名', '神椿'];
 ---
 

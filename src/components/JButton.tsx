@@ -11,28 +11,12 @@ const loadDialogPolyfill = async (dialog: HTMLDialogElement) => {
   }
 };
 
-const genRndStr = (): string => {
-  const hiragana =
-    'あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん';
-  const length = Math.floor(Math.random() * 8) + 3;
-
-  let result = '';
-  for (let i = 0; i < length; i++) {
-    const randomIndex = Math.floor(Math.random() * hiragana.length);
-    result += hiragana[randomIndex];
-  }
-
-  return result;
-};
-
 /*========== JButtonList ==========*/
 type JButtonListProps = {
   buttonList: CollectionEntry<'voice'>[];
 };
 export const JButtonList: Component<JButtonListProps> = (props) => {
-  // const btns = [...Array(400)].map((_) => genRndStr());
-
-  const dummy = Array(20)
+  const dummy = Array(1)
     .fill(props.buttonList)
     .flat() as CollectionEntry<'voice'>[];
 
@@ -59,7 +43,7 @@ export const JButtonList: Component<JButtonListProps> = (props) => {
     }));
     setStoreBtns('list', reconcile(newObj));
   };
-  //
+
   return (
     <>
       <label class="flex items-center gap-2">
@@ -140,7 +124,7 @@ export const JButton2: Component<JButton2Props> = (props) => {
         <div class="mx-auto flex max-w-5xl flex-row-reverse items-center justify-between px-2">
           <CloseButton />
           <div class="flex items-center gap-5">
-            <AudioControl ref={(el) => (audio = el)} />
+            <AudioControl slug={props.button.slug} ref={(el) => (audio = el)} />
             <a href={`/voice/${props.button.slug}/`}>{btnData.text}</a>
           </div>
         </div>
@@ -165,11 +149,16 @@ const CloseButton: Component = () => (
 
 /*========== AudioControl ==========*/
 type AudioControlProps = {
+  slug: string;
   ref: (el: HTMLAudioElement) => void;
 };
 const AudioControl: Component<AudioControlProps> = (props) => {
   let audio!: HTMLAudioElement;
   const [isPlaying, setIsPlaying] = createSignal(false);
+
+  const audioFile = import.meta.env.PROD
+    ? `https://r2.wisekai.cc/${props.slug}.mp3`
+    : `.tmp_own/${props.slug}.mp3`;
 
   const handleButtonClick = () => {
     if (isPlaying()) {
@@ -202,7 +191,7 @@ const AudioControl: Component<AudioControlProps> = (props) => {
         </Show>
       </button>
       <audio
-        src="https://soundeffect-lab.info/sound/voice/mp3/info-girl1/info-girl1-omedetougozaimasu1.mp3"
+        src={audioFile}
         ref={(el) => {
           audio = el;
           props.ref(el);
@@ -210,7 +199,6 @@ const AudioControl: Component<AudioControlProps> = (props) => {
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
         onEnded={() => setIsPlaying(false)}
-        muted
       />
     </>
   );
