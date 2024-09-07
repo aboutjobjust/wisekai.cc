@@ -9,7 +9,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "prettier": "prettier --write 'src/**/*.{ts,astro,scss}'",
-    "deploy": "wrangler pages project create"
+    "deploy": "wrangler pages deploy dist"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.2",
