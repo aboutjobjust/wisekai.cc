@@ -1,9 +1,7 @@
 ---
-import 'dialog-polyfill/dialog-polyfill.css';
-import Header from '@components/Header.astro';
+import TopLayout from '@layouts/TopLayout.astro';
 import { JButtonList } from '@components/JButton';
 import JInfoBox from '@components/JInfoBox.astro';
-import Footer from '@components/Footer.astro';
 
 import { getCollection } from 'astro:content';
 import { genVoice } from 'src/lib/genVoice';
@@ -14,49 +12,9 @@ allVoice.forEach(async (voice) => {
   const data = voice.data;
   await genVoice(voice.slug, data.ytid, data.start, data.during);
 });
-
-const tagList = await getCollection('tag');
 ---
 
-<html lang="ja">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <title>Astro</title>
-  </head>
-  <body>
-    <Header />
-    <main class="mx-auto max-w-5xl px-2">
-      <h1 class="mb-3 text-xl font-bold text-gray-600">ボタン一覧</h1>
-      <div class="py-4">
-        <h2 class="inline-block py-1">タグ一覧：</h2>
-        <ul class="inline-flex flex-wrap gap-2">
-          {
-            tagList.map((tag) => (
-              <li>
-                <a class="rounded-2xl border border-gray-400 px-4 py-1" href={`/tag/${tag.id}`}>
-                  {tag.data.title}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </div>
-      <JButtonList buttonList={allVoice} client:load />
-      <JInfoBox />
-    </main>
-    <Footer />
-  </body>
-</html>
-
-<style is:global>
-  html {
-    scrollbar-gutter: stable;
-  }
-
-  p + p {
-    margin-top: 1.5em;
-  }
-</style>
+<TopLayout>
+  <JButtonList buttonList={allVoice} client:load />
+  <JInfoBox />
+</TopLayout>

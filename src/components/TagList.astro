@@ -1,0 +1,21 @@
+---
+import { getCollection } from 'astro:content';
+
+const tagList = await getCollection('tag');
+---
+
+<div class="py-4">
+  <h2 class="inline-block py-1">タグ一覧：</h2>
+  <ul class="inline-flex flex-wrap gap-2">
+    <li><a class="rounded-2xl border border-gray-400 px-4 py-1" href="/">全て</a></li>
+    {
+      tagList.map((tag) => (
+        <li>
+          <a class="rounded-2xl border border-gray-400 px-4 py-1" href={`/tag/${tag.id}/`}>
+            {tag.data.title}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</div>

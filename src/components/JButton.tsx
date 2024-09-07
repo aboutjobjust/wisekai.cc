@@ -158,7 +158,7 @@ const AudioControl: Component<AudioControlProps> = (props) => {
 
   const audioFile = import.meta.env.PROD
     ? `https://r2.wisekai.cc/${props.slug}.mp3`
-    : `.tmp_own/${props.slug}.mp3?ver=${Math.random()}`;
+    : `/.tmp_own/${props.slug}.mp3?ver=${Math.random()}`;
 
   const handleButtonClick = () => {
     if (isPlaying()) {
