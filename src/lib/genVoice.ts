@@ -3,10 +3,18 @@ import ffmpeg from 'fluent-ffmpeg';
 import { R2 } from 'node-cloudflare-r2';
 import { createWriteStream, existsSync, mkdirSync, unlink } from 'node:fs';
 import { dirname, resolve } from 'node:path';
+import { simpleGit } from 'simple-git';
 
 const TMP_ROOT = '.tmp_own/';
+const git = simpleGit();
+const r2 = new R2({
+  accountId: import.meta.env.R2_ACCOUNT_ID,
+  accessKeyId: import.meta.env.R2_ACCESS_KEY_ID,
+  secretAccessKey: import.meta.env.R2_SECRET_ACCESS_KEY,
+});
+const bucket = r2.bucket('jochovoice');
 
-export const downloadMP3 = async (videoId: string) => {
+const dlFromYT = async (videoId: string) => {
   const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
   const mp3FilePath = resolve(TMP_ROOT, `${videoId}.mp3`);
   const mp4FilePath = resolve(TMP_ROOT, `${videoId}.mp4`);
@@ -21,7 +29,7 @@ export const downloadMP3 = async (videoId: string) => {
   const deleteTmp = () => {
     unlink(mp4FilePath, (err) => {
       if (err) return;
-      console.log('Tmp file was deleted');
+      console.log('mp4 file was deleted');
     });
   };
 
@@ -56,13 +64,45 @@ export const downloadMP3 = async (videoId: string) => {
   return mp3FilePath;
 };
 
-export const genVoiceMP3 = async (
+const uploadR2 = async (slug: string) => {
+  const voicePath = `${slug}.mp3`;
+  const voiceLocalPath = resolve(TMP_ROOT, voicePath);
+
+  bucket.provideBucketPublicUrl(import.meta.env.PUBLIC_R2_URL);
+
+  const upload = await bucket.uploadFile(
+    voiceLocalPath,
+    voicePath,
+    undefined,
+    'audio/mpeg',
+  );
+
+  console.log('Successful upload to r2', upload);
+};
+
+const shouldReGenVoice = async (slug: string): Promise<boolean> => {
+  const status = await git.status();
+
+  const filePath = `src/content/voice/${slug}.mdx`;
+
+  const isModified = status.modified.includes(filePath);
+  const isNewFile = status.not_added.includes(filePath);
+
+  return isModified || isNewFile;
+};
+
+export const genVoice = async (
   slug: string,
   videoId: string,
   start: number,
   during: number,
 ) => {
-  const mp3FilePath = await downloadMP3(videoId);
+  if (!(await shouldReGenVoice(slug))) {
+    console.log('変更されていません');
+    return;
+  }
+
+  const mp3FilePath = await dlFromYT(videoId);
   const voicePath = resolve(TMP_ROOT, `${slug}.mp3`);
   const voiceDirPath = dirname(voicePath);
 
@@ -84,26 +124,8 @@ export const genVoiceMP3 = async (
       })
       .saveToFile(voicePath);
   });
-};
 
-export const uploadR2 = async () => {
-  const voicePath = resolve(TMP_ROOT, `pre01/01.mp3`);
-  const r2 = new R2({
-    accountId: import.meta.env.R2_ACCOUNT_ID,
-    accessKeyId: import.meta.env.R2_ACCESS_KEY_ID,
-    secretAccessKey: import.meta.env.R2_SECRET_ACCESS_KEY,
-  });
-  const bucket = r2.bucket('jochovoice');
-  bucket.provideBucketPublicUrl(import.meta.env.PUBLIC_R2_PUBLIC_URL);
-
-  console.log(await bucket.exists());
-
-  const upload = await bucket.uploadFile(
-    voicePath,
-    'pre01/01.mp3',
-    undefined,
-    'audio/mpeg',
-  );
-
-  console.log(upload);
+  if (import.meta.env.PROD) {
+    await uploadR2(slug);
+  }
 };
