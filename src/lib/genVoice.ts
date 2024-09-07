@@ -7,12 +7,6 @@ import { simpleGit } from 'simple-git';
 
 const TMP_ROOT = '.tmp_own/';
 const git = simpleGit();
-const r2 = new R2({
-  accountId: import.meta.env.R2_ACCOUNT_ID,
-  accessKeyId: import.meta.env.R2_ACCESS_KEY_ID,
-  secretAccessKey: import.meta.env.R2_SECRET_ACCESS_KEY,
-});
-const bucket = r2.bucket('jochovoice');
 
 const dlFromYT = async (videoId: string) => {
   const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
@@ -64,10 +58,16 @@ const dlFromYT = async (videoId: string) => {
   return mp3FilePath;
 };
 
-const uploadR2 = async (slug: string) => {
+export const uploadR2 = async (slug: string) => {
   const voicePath = `${slug}.mp3`;
   const voiceLocalPath = resolve(TMP_ROOT, voicePath);
 
+  const r2 = new R2({
+    accountId: import.meta.env.R2_ACCOUNT_ID,
+    accessKeyId: import.meta.env.R2_ACCESS_KEY_ID,
+    secretAccessKey: import.meta.env.R2_SECRET_ACCESS_KEY,
+  });
+  const bucket = r2.bucket('jochovoice');
   bucket.provideBucketPublicUrl(import.meta.env.PUBLIC_R2_URL);
 
   const upload = await bucket.uploadFile(
@@ -124,8 +124,4 @@ export const genVoice = async (
       })
       .saveToFile(voicePath);
   });
-
-  if (import.meta.env.PROD) {
-    await uploadR2(slug);
-  }
 };

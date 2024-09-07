@@ -5,13 +5,16 @@ import { JButtonList } from '@components/JButton';
 import JInfoBox from '@components/JInfoBox.astro';
 
 import { getCollection } from 'astro:content';
-import { genVoice } from 'src/lib/genVoice';
+import { genVoice, uploadR2 } from 'src/lib/genVoice';
 
 const allVoice = await getCollection('voice');
 
 allVoice.forEach(async (voice) => {
   const data = voice.data;
   await genVoice(voice.slug, data.ytid, data.start, data.during);
+  if (import.meta.env.PROD) {
+    await uploadR2(voice.slug);
+  }
 });
 ---
 

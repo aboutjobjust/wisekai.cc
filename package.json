@@ -8,7 +8,8 @@
     "build": "astro check && astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "prettier": "prettier --write 'src/**/*.{ts,astro,scss}'"
+    "prettier": "prettier --write 'src/**/*.{ts,astro,scss}'",
+    "deploy": "wrangler pages project create"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.2",
@@ -36,6 +37,7 @@
     "prettier": "^3.2.5",
     "prettier-plugin-astro": "^0.13.0",
     "prettier-plugin-tailwindcss": "^0.5.14",
-    "simple-git": "^3.26.0"
+    "simple-git": "^3.26.0",
+    "wrangler": "^3.75.0"
   }
 }
