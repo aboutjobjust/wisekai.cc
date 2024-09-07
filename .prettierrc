@@ -2,7 +2,7 @@
   "trailingComma": "all",
   "tabWidth": 2,
   "useTabs": false,
-  "semi": false,
+  "semi": true,
   "singleQuote": true,
   "jsxSingleQuote": false,
   "arrowParens": "always",
@@ -29,7 +29,8 @@
     {
       "files": "*.astro",
       "options": {
-        "parser": "astro"
+        "parser": "astro",
+        "printWidth": 120
       }
     }
   ]

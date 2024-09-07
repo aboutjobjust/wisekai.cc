@@ -1,0 +1,38 @@
+---
+import GlobalLayout from '@layouts/GlobalLayout.astro';
+import { AudioControl } from '@components/JButton';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const voiceEntries = await getCollection('voice');
+  return voiceEntries.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+const { entry } = Astro.props;
+---
+
+<GlobalLayout>
+  <section slot="before-main" class="border-b-2 border-gray-200 py-5">
+    <div class="mx-auto flex max-w-5xl flex-row-reverse items-center justify-between px-2">
+      <a class="h-8 w-8" href="javascript:history.back()"> 閉じる </a>
+      <div class="flex items-center gap-5">
+        <AudioControl slug={entry.slug} client:load />
+        <h1>{entry.data.text}</h1>
+      </div>
+    </div>
+  </section>
+
+  <iframe
+    id="youtube-embed"
+    width="560"
+    height="315"
+    src={`https://www.youtube.com/embed/${entry.data.ytid}?start=${Math.floor(entry.data.start)}`}
+    title="YouTube video player"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    referrerpolicy="strict-origin-when-cross-origin"
+    allowfullscreen
+  >
+  </iframe>
+</GlobalLayout>

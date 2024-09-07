@@ -1,16 +1,26 @@
 ---
+import GlobalLayout from '@layouts/GlobalLayout.astro';
+import TopLayout from '@layouts/TopLayout.astro';
+import { JButtonList } from '@components/JButton';
+import JInfoBox from '@components/JInfoBox.astro';
 
+import { getCollection } from 'astro:content';
+import { genVoice, uploadR2 } from 'src/lib/genVoice';
+
+const allVoice = await getCollection('voice');
+
+allVoice.forEach(async (voice) => {
+  const data = voice.data;
+  await genVoice(voice.slug, data.ytid, data.start, data.during);
+  if (import.meta.env.PROD) {
+    await uploadR2(voice.slug);
+  }
+});
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <title>Astro</title>
-  </head>
-  <body>
-    <h1>Astro</h1>
-  </body>
-</html>
+<GlobalLayout>
+  <TopLayout>
+    <JButtonList buttonList={allVoice} client:load />
+    <JInfoBox />
+  </TopLayout>
+</GlobalLayout>

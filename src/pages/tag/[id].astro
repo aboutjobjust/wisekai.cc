@@ -1,0 +1,25 @@
+---
+import GlobalLayout from '@layouts/GlobalLayout.astro';
+import TopLayout from '@layouts/TopLayout.astro';
+import { JButtonList } from '@components/JButton';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const tagEntries = await getCollection('tag');
+  return tagEntries.map((entry) => ({
+    params: { id: entry.id },
+    props: { entry },
+  }));
+}
+const { entry } = Astro.props;
+
+const voice = await getCollection('voice', ({ data }) => {
+  return data.tag?.some((tag) => tag.id === entry.id);
+});
+---
+
+<GlobalLayout>
+  <TopLayout>
+    <JButtonList buttonList={voice} client:load />
+  </TopLayout>
+</GlobalLayout>
