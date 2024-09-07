@@ -17,7 +17,8 @@ import Footer from '@components/Footer.astro';
   </head>
   <body>
     <Header />
-    <main class="j-main mx-auto max-w-5xl px-2">
+    <slot name="before-main" />
+    <main class="j-main mx-auto max-w-5xl px-2 py-10">
       <slot />
     </main>
     <Footer />

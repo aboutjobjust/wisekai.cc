@@ -1,4 +1,5 @@
 ---
+import GlobalLayout from '@layouts/GlobalLayout.astro';
 import TopLayout from '@layouts/TopLayout.astro';
 import { JButtonList } from '@components/JButton';
 import { getCollection } from 'astro:content';
@@ -17,6 +18,8 @@ const voice = await getCollection('voice', ({ data }) => {
 });
 ---
 
-<TopLayout>
-  <JButtonList buttonList={voice} client:load />
-</TopLayout>
+<GlobalLayout>
+  <TopLayout>
+    <JButtonList buttonList={voice} client:load />
+  </TopLayout>
+</GlobalLayout>

@@ -1,4 +1,6 @@
 ---
+import GlobalLayout from '@layouts/GlobalLayout.astro';
+import { AudioControl } from '@components/JButton';
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -11,66 +13,26 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 ---
 
-<h1>{entry.data.text}</h1>
-<iframe
-  id="youtube-embed"
-  width="560"
-  height="315"
-  src={`https://www.youtube.com/embed/${entry.data.ytid}?si=M8WBjCexaZ3_pktr&enablejsapi=1`}
-  title="YouTube video player"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-  referrerpolicy="strict-origin-when-cross-origin"
-  allowfullscreen
-  data-start={entry.data.start}
-  data-during={entry.data.during}
->
-</iframe>
-<button id="youtube-play"> play() </button>
+<GlobalLayout>
+  <section slot="before-main" class="border-b-2 border-gray-200 py-5">
+    <div class="mx-auto flex max-w-5xl flex-row-reverse items-center justify-between px-2">
+      <a class="h-8 w-8" href="javascript:history.back()"> 閉じる </a>
+      <div class="flex items-center gap-5">
+        <AudioControl slug={entry.slug} client:load />
+        <h1>{entry.data.text}</h1>
+      </div>
+    </div>
+  </section>
 
-<script>
-  const iframe = document.querySelector<HTMLIFrameElement>('#youtube-embed')!;
-  const player = iframe.contentWindow!;
-
-  // 再生開始と終了のタイミング (秒単位、0.5秒も指定可能)
-  const startTime = Number(iframe.dataset.start);
-  const duringTime = Number(iframe.dataset.during);
-
-  // 再生開始
-  iframe.onload = () => {
-    sendCommand({
-      event: 'command',
-      func: 'seekTo',
-      args: [startTime],
-    });
-    sendCommand({
-      event: 'command',
-      func: 'pauseVideo',
-    });
-  };
-
-  const button = document.querySelector<HTMLButtonElement>('#youtube-play')!;
-  button.addEventListener('click', () => {
-    playFromTo();
-  });
-
-  // 再生を開始する関数
-  function playFromTo() {
-    // 動画を再生
-    sendCommand({
-      event: 'command',
-      func: 'playVideo',
-    });
-    // 終了時間になったら停止するタイマーを設定
-    setTimeout(() => {
-      sendCommand({
-        event: 'command',
-        func: 'pauseVideo',
-      });
-    }, duringTime * 1000);
-  }
-
-  // YouTube プレーヤーにメッセージを送信して操作
-  function sendCommand(command: any) {
-    player.postMessage(JSON.stringify(command), '*');
-  }
-</script>
+  <iframe
+    id="youtube-embed"
+    width="560"
+    height="315"
+    src={`https://www.youtube.com/embed/${entry.data.ytid}?start=${Math.floor(entry.data.start)}`}
+    title="YouTube video player"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    referrerpolicy="strict-origin-when-cross-origin"
+    allowfullscreen
+  >
+  </iframe>
+</GlobalLayout>

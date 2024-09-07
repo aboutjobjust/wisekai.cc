@@ -125,7 +125,12 @@ export const JButton2: Component<JButton2Props> = (props) => {
           <CloseButton />
           <div class="flex items-center gap-5">
             <AudioControl slug={props.button.slug} ref={(el) => (audio = el)} />
-            <a href={`/voice/${props.button.slug}/`}>{btnData.text}</a>
+            <a
+              class="text-blue-800 underline"
+              href={`/voice/${props.button.slug}/`}
+            >
+              {btnData.text}
+            </a>
           </div>
         </div>
       </dialog>
@@ -150,9 +155,9 @@ const CloseButton: Component = () => (
 /*========== AudioControl ==========*/
 type AudioControlProps = {
   slug: string;
-  ref: (el: HTMLAudioElement) => void;
+  ref?: (el: HTMLAudioElement) => void;
 };
-const AudioControl: Component<AudioControlProps> = (props) => {
+export const AudioControl: Component<AudioControlProps> = (props) => {
   let audio!: HTMLAudioElement;
   const [isPlaying, setIsPlaying] = createSignal(false);
 
@@ -194,7 +199,7 @@ const AudioControl: Component<AudioControlProps> = (props) => {
         src={audioFile}
         ref={(el) => {
           audio = el;
-          props.ref(el);
+          if (props.ref) props.ref(el);
         }}
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
