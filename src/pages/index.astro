@@ -15,7 +15,7 @@ allVoice.forEach(async (voice) => {
   await genVoice(voice.slug, data.ytid, data.start, data.during);
 });
 
-const tagList = ['鳴き声', 'あいさつ', '食べ物', '地名', '神椿'];
+const tagList = await getCollection('tag');
 ---
 
 <html lang="ja">
@@ -36,8 +36,8 @@ const tagList = ['鳴き声', 'あいさつ', '食べ物', '地名', '神椿'];
           {
             tagList.map((tag) => (
               <li>
-                <a class="rounded-2xl border border-gray-400 px-4 py-1" href="#">
-                  {tag}
+                <a class="rounded-2xl border border-gray-400 px-4 py-1" href={`/tag/${tag.id}`}>
+                  {tag.data.title}
                 </a>
               </li>
             ))
