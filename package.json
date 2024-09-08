@@ -19,6 +19,7 @@
     "@distube/ytdl-core": "^4.14.4",
     "@types/fluent-ffmpeg": "^2.1.26",
     "astro": "^4.14.2",
+    "astro-embed": "^0.7.2",
     "astro-icon": "^1.1.1",
     "astro-purgecss": "^4.1.1",
     "dialog-polyfill": "^0.5.6",
