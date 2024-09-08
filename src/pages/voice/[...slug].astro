@@ -4,6 +4,7 @@ import { AudioControl } from '@components/JButton';
 import { IoClose } from 'solid-icons/io';
 import { getCollection, getEntry } from 'astro:content';
 import TagList from '@components/TagList.astro';
+import SnsShare from '@components/SnsShare.astro';
 
 export async function getStaticPaths() {
   const voiceEntries = await getCollection('voice');
@@ -32,13 +33,18 @@ const tagList = entry.data.tag
       </a>
       <div class="flex items-center gap-2 md:gap-4">
         <AudioControl slug={entry.slug} client:load />
-        <h1>{entry.data.text}</h1>
+        <h1 class="text-xl font-bold text-gray-600">{entry.data.text}</h1>
       </div>
     </div>
   </section>
 
   <Fragment>
-    {tagList && <TagList tagList={tagList} ver="voice" />}
+    <div class="flex justify-between pb-10">
+      <div>{tagList && <TagList tagList={tagList} ver="voice" />}</div>
+      <SnsShare />
+    </div>
+
+    <h2 class="text-xl font-bold">元配信</h2>
     <iframe
       id="youtube-embed"
       width="560"
