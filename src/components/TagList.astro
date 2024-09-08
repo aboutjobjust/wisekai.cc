@@ -2,16 +2,17 @@
 import { getCollection } from 'astro:content';
 
 const tagList = await getCollection('tag');
+const currentPath = Astro.url.pathname;
 ---
 
-<div class="py-4">
-  <h2 class="inline-block py-1">タグ一覧：</h2>
-  <ul class="inline-flex flex-wrap gap-2">
-    <li><a class="rounded-2xl border border-gray-400 px-4 py-1" href="/">全て</a></li>
+<div class="flex flex-wrap gap-2 py-6">
+  <h2 class="py-1 font-bold text-gray-600">タグ一覧：</h2>
+  <ul class="flex flex-wrap gap-1">
+    <li><a class:list={['tag', { current: currentPath === '/' }]} href="/">全て</a></li>
     {
       tagList.map((tag) => (
         <li>
-          <a class="rounded-2xl border border-gray-400 px-4 py-1" href={`/tag/${tag.id}/`}>
+          <a class:list={['tag', { current: currentPath === `/tag/${tag.id}/` }]} href={`/tag/${tag.id}/`}>
             {tag.data.title}
           </a>
         </li>
@@ -19,3 +20,16 @@ const tagList = await getCollection('tag');
     }
   </ul>
 </div>
+
+<style>
+  .tag {
+    display: inline-block;
+    border-radius: 1rem;
+    border: 1px solid #888;
+    padding: 0.25rem 1rem;
+  }
+  .current {
+    background-color: #333;
+    color: #eee;
+  }
+</style>
