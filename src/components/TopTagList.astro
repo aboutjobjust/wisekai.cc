@@ -1,0 +1,11 @@
+---
+import { getCollection } from 'astro:content';
+import TagList from './TagList.astro';
+
+const tagList = await getCollection('tag');
+---
+
+<div class="flex flex-wrap gap-2 py-6">
+  <h2 class="py-1 font-bold text-gray-600">タグ一覧：</h2>
+  <TagList tagList={tagList} ver="top" />
+</div>

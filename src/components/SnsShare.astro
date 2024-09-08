@@ -1,0 +1,60 @@
+---
+import { FaBrandsTwitter, FaBrandsSquareFacebook, FaBrandsLine } from 'solid-icons/fa';
+import { SiHatenabookmark } from 'solid-icons/si';
+
+const currntURL = new URL(Astro.url.pathname, Astro.site);
+const encodedURL = encodeURI(currntURL.toString());
+const hashtag = 'ヰ世界情緒';
+const text = 'バーチャルダークシンガーヰ世界情緒の声を再生できるボタンサイト';
+
+const genTwitterURL = () => {
+  const baseURL = new URL('http://twitter.com/share');
+  baseURL.searchParams.append('url', encodedURL);
+  baseURL.searchParams.append('text', text);
+  baseURL.searchParams.append('hashtags', hashtag);
+  return baseURL.toString();
+};
+
+const genFacebookURL = () => {
+  const baseURL = new URL('http://www.facebook.com/share.php');
+  baseURL.searchParams.append('u', encodedURL);
+  baseURL.searchParams.append('hashtag', hashtag);
+  return baseURL.toString();
+};
+
+const genLineURL = () => {
+  const baseURL = new URL('https://social-plugins.line.me/lineit/share');
+  baseURL.searchParams.append('url', encodedURL);
+  return baseURL.toString();
+};
+
+const genHatenaURL = () => {
+  const baseURL = new URL('http://b.hatena.ne.jp/add');
+  baseURL.searchParams.append('mode', 'confirm');
+  baseURL.searchParams.append('url', encodedURL);
+  return baseURL.toString();
+};
+---
+
+<ul class="flex gap-1">
+  <li>
+    <a href={genTwitterURL()} target="_blank" rel="noopener noreferrer">
+      <FaBrandsTwitter size={32} color="#1d9bf0" title="twitter" />
+    </a>
+  </li>
+  <li>
+    <a href={genFacebookURL()} target="_blank" rel="noopener noreferrer">
+      <FaBrandsSquareFacebook size={32} color="#1877f2" title="facebook" />
+    </a>
+  </li>
+  <li>
+    <a href={genLineURL()} target="_blank" rel="noopener noreferrer">
+      <FaBrandsLine size={32} color="#06c755" title="Line" />
+    </a>
+  </li>
+  <li>
+    <a href={genHatenaURL()} target="_blank" rel="noopener noreferrer">
+      <SiHatenabookmark size={32} color="#00A4DE" title="Hatena" />
+    </a>
+  </li>
+</ul>

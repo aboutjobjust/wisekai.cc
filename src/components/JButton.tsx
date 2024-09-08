@@ -1,7 +1,9 @@
-import { Icon } from '@iconify-icon/solid';
 import type { CollectionEntry } from 'astro:content';
+import { FaSolidPause, FaSolidPlay } from 'solid-icons/fa';
+import { FiSearch } from 'solid-icons/fi';
+import { IoClose } from 'solid-icons/io';
 import type { Component } from 'solid-js';
-import { For, Show, createSignal, onMount } from 'solid-js';
+import { For, Show, createSignal, createUniqueId, onMount } from 'solid-js';
 import { createStore, reconcile } from 'solid-js/store';
 
 const loadDialogPolyfill = async (dialog: HTMLDialogElement) => {
@@ -16,11 +18,7 @@ type JButtonListProps = {
   buttonList: CollectionEntry<'voice'>[];
 };
 export const JButtonList: Component<JButtonListProps> = (props) => {
-  const dummy = Array(1)
-    .fill(props.buttonList)
-    .flat() as CollectionEntry<'voice'>[];
-
-  const firstArr = dummy.map((button) => {
+  const firstArr = props.buttonList.map((button) => {
     return {
       button,
       hidden: false,
@@ -44,23 +42,23 @@ export const JButtonList: Component<JButtonListProps> = (props) => {
     setStoreBtns('list', reconcile(newObj));
   };
 
+  const id = createUniqueId();
+
   return (
     <>
-      <label class="flex items-center gap-2">
-        <Icon
-          width={32}
-          aria-label="検索する"
-          class="text-gray-500"
-          icon="material-symbols:search-rounded"
-        />
+      <div class="flex items-center gap-2">
+        <label for={id}>
+          <FiSearch size={32} class="text-gray-500" title="ひらがな検索" />
+        </label>
         <input
+          id={id}
           class="h-8 w-[500px] max-w-full border border-gray-400 p-2 outline-black"
           type="search"
           placeholder="ひらがな検索"
           pattern="^[ぁ-んー]*$"
           onInput={handleInput}
         />
-      </label>
+      </div>
       <div class="mt-4 flex flex-col flex-wrap gap-2 sm:flex-row">
         <For each={storeBtns.list}>
           {(storeBtn) => (
@@ -116,14 +114,14 @@ export const JButton2: Component<JButton2Props> = (props) => {
         {btnData.text}
       </button>
       <dialog
-        class="bottom-0 mb-0 w-full border-none py-5 shadow-lg"
+        class="bottom-0 mb-0 w-full border-none px-0 py-5 shadow-lg"
         style={{ 'box-shadow': '0px -15px 30px 0px #ccc', position: 'fixed' }}
         onClose={handleDialogClose}
         ref={dialog}
       >
         <div class="mx-auto flex max-w-5xl flex-row-reverse items-center justify-between px-2">
           <CloseButton />
-          <div class="flex items-center gap-5">
+          <div class="flex items-center gap-2 md:gap-4">
             <AudioControl slug={props.button.slug} ref={(el) => (audio = el)} />
             <a
               class="text-blue-800 underline"
@@ -141,13 +139,8 @@ export const JButton2: Component<JButton2Props> = (props) => {
 /*========== CloseButton ==========*/
 const CloseButton: Component = () => (
   <form method="dialog" class="inline-block h-8 w-8">
-    <button class="h-8 w-8" aria-label="閉じる">
-      <Icon
-        class="text-gray-500"
-        aria-hidden="true"
-        icon="material-symbols:close-rounded"
-        width={32}
-      />
+    <button class="h-8 w-8" aria-label="閉じる" autofocus>
+      <IoClose size={32} class="text-gray-500" aria-hidden="true" />
     </button>
   </form>
 );
@@ -175,24 +168,14 @@ export const AudioControl: Component<AudioControlProps> = (props) => {
 
   return (
     <>
-      <button class="h-12 w-12" onClick={handleButtonClick}>
+      <button class="h-8 w-8" onClick={handleButtonClick}>
         <Show
           when={isPlaying()}
           fallback={
-            <Icon
-              class="text-gray-500"
-              aria-label="再生する"
-              icon="material-symbols:play-arrow-rounded"
-              width={48}
-            />
+            <FaSolidPlay size={32} class="text-gray-500" title="再生する" />
           }
         >
-          <Icon
-            class="text-gray-500"
-            aria-label="一時停止する"
-            icon="material-symbols:pause-rounded"
-            width={48}
-          />
+          <FaSolidPause size={32} class="text-gray-500" title="一時停止する" />
         </Show>
       </button>
       <audio

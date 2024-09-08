@@ -19,6 +19,7 @@
     "@distube/ytdl-core": "^4.14.4",
     "@types/fluent-ffmpeg": "^2.1.26",
     "astro": "^4.14.2",
+    "astro-embed": "^0.7.2",
     "astro-icon": "^1.1.1",
     "astro-purgecss": "^4.1.1",
     "dialog-polyfill": "^0.5.6",
@@ -26,6 +27,7 @@
     "node-cloudflare-r2": "^0.2.3",
     "prettier-plugin-organize-imports": "^3.2.4",
     "purgecss": "^6.0.0",
+    "solid-icons": "^1.1.0",
     "solid-js": "^1.8.21",
     "tailwindcss": "^3.4.10",
     "typescript": "^5.4.5",
@@ -37,6 +39,7 @@
     "prettier": "^3.2.5",
     "prettier-plugin-astro": "^0.13.0",
     "prettier-plugin-tailwindcss": "^0.5.14",
+    "sass-embedded": "^1.78.0",
     "simple-git": "^3.26.0",
     "wrangler": "^3.75.0"
   }
