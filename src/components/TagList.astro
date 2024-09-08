@@ -1,25 +1,34 @@
 ---
-import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
 
-const tagList = await getCollection('tag');
+interface Props {
+  tagList: CollectionEntry<'tag'>[];
+  ver: 'top' | 'voice';
+}
+const { tagList, ver } = Astro.props;
 const currentPath = Astro.url.pathname;
 ---
 
-<div class="flex flex-wrap gap-2 py-6">
-  <h2 class="py-1 font-bold text-gray-600">タグ一覧：</h2>
-  <ul class="flex flex-wrap gap-1">
-    <li><a class:list={['tag', { current: currentPath === '/' }]} href="/">全て</a></li>
-    {
-      tagList.map((tag) => (
-        <li>
-          <a class:list={['tag', { current: currentPath === `/tag/${tag.id}/` }]} href={`/tag/${tag.id}/`}>
-            {tag.data.title}
-          </a>
-        </li>
-      ))
-    }
-  </ul>
-</div>
+<ul class="flex flex-wrap gap-1">
+  {
+    ver === 'top' && (
+      <li>
+        <a class:list={['tag', { current: currentPath === '/' }]} href="/">
+          全て
+        </a>
+      </li>
+    )
+  }
+  {
+    tagList.map((tag) => (
+      <li>
+        <a class:list={['tag', { current: currentPath === `/tag/${tag.id}/` }]} href={`/tag/${tag.id}/`}>
+          {tag.data.title}
+        </a>
+      </li>
+    ))
+  }
+</ul>
 
 <style>
   .tag {
