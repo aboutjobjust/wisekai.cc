@@ -1,12 +1,12 @@
 ---
-
+import { Image } from 'astro:assets';
+import logoImage from '@assets/img/logo.svg';
 ---
 
 <header class="border-b-2 border-gray-300 shadow-lg">
-  <div class="mx-auto max-w-5xl px-2">
-    <a class="inline-flex items-center gap-3 py-3 text-2xl text-gray-600" href="/">
-      <span class="inline-block h-12 w-12 rounded-full bg-blue-400"></span>
-      ヰ世界情緒ボタン
+  <div class="mx-auto max-w-5xl px-2 py-3">
+    <a href="/">
+      <Image src={logoImage} alt="ヰ世界情緒ボタン" />
     </a>
   </div>
 </header>
