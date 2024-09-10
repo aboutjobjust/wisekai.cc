@@ -4,15 +4,45 @@ import 'dialog-polyfill/dialog-polyfill.css';
 import { ViewTransitions } from 'astro:transitions';
 import Header from '@components/Header.astro';
 import Footer from '@components/Footer.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+}
+
+const SITE_NAME = 'ヰ世界情緒ボタン';
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const {
+  title = SITE_NAME,
+  description = '「ヰ世界情緒ボタン」は神椿スタジオ所属のバーチャルダークシンガーであるヰ世界情緒さんの配信である、「ヰ世界電子通信部」での台詞をボタン1つで再生可能なサイトです。',
+  ogImage = 'ogp.png',
+} = Astro.props;
 ---
 
 <html lang="ja">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
-    <title>Astro</title>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+    {/* favicon */}
+    <link rel="icon" sizes="32x32" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    {/* OGP */}
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(ogImage, Astro.site)} />
+    <meta property="og:locale" content="ja_JP" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@aboutjobjust331" />
     <ViewTransitions />
   </head>
   <body>
