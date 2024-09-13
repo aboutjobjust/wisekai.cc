@@ -8,6 +8,7 @@ import { getCollection, getEntry } from 'astro:content';
 import TagList from '@components/TagList.astro';
 import { YouTube } from 'astro-embed';
 import SnsShare from '@components/SnsShare.astro';
+import { SITE_NAME } from '@lib/constants';
 
 export async function getStaticPaths() {
   const voiceEntries = await getCollection('voice');
@@ -34,7 +35,10 @@ function changeFomatHms(sec: number) {
 }
 ---
 
-<GlobalLayout>
+<GlobalLayout
+  title={`${entry.data.text} | ボタン詳細 | ${SITE_NAME}`}
+  description={`「${SITE_NAME}」で収録しているヰ世界情緒さんの台詞「${entry.data.text}」についての詳細ページです。`}
+>
   <section slot="before-main" class="border-b-2 border-gray-200">
     <div class="mx-auto flex max-w-5xl flex-row-reverse items-center justify-between px-2 py-5">
       <a aria-label="閉じる" class="h-8 w-8" href="javascript:history.back()">

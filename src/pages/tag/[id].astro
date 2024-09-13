@@ -3,6 +3,7 @@ import GlobalLayout from '@layouts/GlobalLayout.astro';
 import TopLayout from '@layouts/TopLayout.astro';
 import { JButtonList } from '@components/JButton';
 import { getCollection } from 'astro:content';
+import { SITE_NAME } from '@lib/constants';
 
 export async function getStaticPaths() {
   const tagEntries = await getCollection('tag');
@@ -18,7 +19,10 @@ const voice = await getCollection('voice', ({ data }) => {
 });
 ---
 
-<GlobalLayout>
+<GlobalLayout
+  title={`${entry.data.title} | タグ一覧 | ${SITE_NAME}`}
+  description={`「${SITE_NAME}」で収録しているヰ世界情緒さんの台詞のうち「${entry.data.title}」タグで分類されているボタンの一覧ページです。`}
+>
   <TopLayout>
     <JButtonList buttonList={voice} client:load />
   </TopLayout>
