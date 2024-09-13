@@ -8,7 +8,6 @@ import { defineConfig } from 'astro/config';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://wisekai.cc',
-  trailingSlash: 'always',
   compressHTML: import.meta.env.PROD,
   integrations: [
     tailwind(),
