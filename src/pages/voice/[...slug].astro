@@ -9,6 +9,7 @@ import TagList from '@components/TagList.astro';
 import { YouTube } from 'astro-embed';
 import SnsShare from '@components/SnsShare.astro';
 import { SITE_NAME } from '@lib/constants';
+import { processVoice } from '@lib/processVoice';
 
 export async function getStaticPaths() {
   const voiceEntries = await getCollection('voice');
@@ -33,6 +34,8 @@ const ytInfo = await getYoutubeBasicInfo(entry.data.ytid);
 function changeFomatHms(sec: number) {
   return new Date(sec * 1000).toISOString().slice(11, 19);
 }
+
+await processVoice(entry);
 ---
 
 <GlobalLayout

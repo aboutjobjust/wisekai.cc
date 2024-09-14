@@ -1,4 +1,5 @@
 import ytdl from '@distube/ytdl-core';
+import type { CollectionEntry } from 'astro:content';
 import ffmpeg from 'fluent-ffmpeg';
 import { R2 } from 'node-cloudflare-r2';
 import { createWriteStream, existsSync, mkdirSync, unlink } from 'node:fs';
@@ -12,13 +13,15 @@ const dlFromYT = async (videoId: string) => {
   const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
   const mp3FilePath = resolve(TMP_ROOT, `${videoId}.mp3`);
   const mp4FilePath = resolve(TMP_ROOT, `${videoId}.mp4`);
+  const mp3DirPath = dirname(mp3FilePath);
 
   if (existsSync(mp3FilePath)) {
-    console.log('This file already exists');
     return mp3FilePath;
   }
 
-  console.log('attempts...');
+  if (!existsSync(mp3DirPath)) {
+    mkdirSync(mp3DirPath, { recursive: true });
+  }
 
   const deleteTmp = () => {
     unlink(mp4FilePath, (err) => {
@@ -58,7 +61,68 @@ const dlFromYT = async (videoId: string) => {
   return mp3FilePath;
 };
 
+const shouldReGenVoice = async (slug: string): Promise<boolean> => {
+  const voicePath = resolve(TMP_ROOT, `${slug}.mp3`);
+  if (!existsSync(voicePath)) {
+    return true;
+  }
+
+  const status = await git.status();
+  const gitPath = `src/content/voice/${slug}.mdx`;
+
+  const isModified = status.modified.includes(gitPath);
+  const isNewFile = status.not_added.includes(gitPath);
+
+  return isModified || isNewFile;
+};
+
+const genVoice = async (voice: CollectionEntry<'voice'>) => {
+  if (!(await shouldReGenVoice(voice.slug))) {
+    return;
+  }
+
+  const voiceData = voice.data;
+
+  const mp3FilePath = await dlFromYT(voiceData.ytid);
+  const voicePath = resolve(TMP_ROOT, `${voice.slug}.mp3`);
+  const voiceDirPath = dirname(voicePath);
+
+  if (!existsSync(voiceDirPath)) {
+    mkdirSync(voiceDirPath, { recursive: true });
+  }
+
+  await new Promise<void>((resolve, reject) => {
+    ffmpeg(mp3FilePath)
+      .setStartTime(voiceData.start)
+      .setDuration(voiceData.during)
+      .on('end', () => {
+        console.log(`Finished gen voice and saving: ${voicePath}`);
+        resolve();
+      })
+      .on('error', (error) => {
+        console.error(`Error occurred: ${error.message}`);
+        reject();
+      })
+      .saveToFile(voicePath);
+  });
+};
+
+const shouldUpload = async (slug: string): Promise<boolean> => {
+  if (import.meta.env.DEV) return false;
+
+  const gitPath = `src/content/voice/${slug}.mdx`;
+
+  const diffs = await git.diffSummary('master', { '--name-only': null });
+  const changedFiles = diffs.files.map(({ file }) => file);
+
+  return changedFiles.includes(gitPath);
+};
+
 export const uploadR2 = async (slug: string) => {
+  if (!(await shouldUpload(slug))) return;
+
+  console.log(`uploading... ${slug}`);
+
   const voicePath = `${slug}.mp3`;
   const voiceLocalPath = resolve(TMP_ROOT, voicePath);
 
@@ -70,58 +134,10 @@ export const uploadR2 = async (slug: string) => {
   const bucket = r2.bucket('jochovoice');
   bucket.provideBucketPublicUrl(import.meta.env.PUBLIC_R2_URL);
 
-  const upload = await bucket.uploadFile(
-    voiceLocalPath,
-    voicePath,
-    undefined,
-    'audio/mpeg',
-  );
-
-  console.log('Successful upload to r2', upload);
+  await bucket.uploadFile(voiceLocalPath, voicePath, undefined, 'audio/mpeg');
 };
 
-const shouldReGenVoice = async (slug: string): Promise<boolean> => {
-  const status = await git.status();
-
-  const filePath = `src/content/voice/${slug}.mdx`;
-
-  const isModified = status.modified.includes(filePath);
-  const isNewFile = status.not_added.includes(filePath);
-
-  return isModified || isNewFile;
-};
-
-export const genVoice = async (
-  slug: string,
-  videoId: string,
-  start: number,
-  during: number,
-) => {
-  if (!(await shouldReGenVoice(slug))) {
-    console.log('変更されていません');
-    return;
-  }
-
-  const mp3FilePath = await dlFromYT(videoId);
-  const voicePath = resolve(TMP_ROOT, `${slug}.mp3`);
-  const voiceDirPath = dirname(voicePath);
-
-  if (!existsSync(voiceDirPath)) {
-    mkdirSync(voiceDirPath, { recursive: true });
-  }
-
-  await new Promise<void>((resolve, reject) => {
-    ffmpeg(mp3FilePath)
-      .setStartTime(start)
-      .setDuration(during)
-      .on('end', () => {
-        console.log(`Finished gen voice and saving: ${voicePath}`);
-        resolve();
-      })
-      .on('error', (error) => {
-        console.error(`Error occurred: ${error.message}`);
-        reject();
-      })
-      .saveToFile(voicePath);
-  });
+export const processVoice = async (voice: CollectionEntry<'voice'>) => {
+  await genVoice(voice);
+  await uploadR2(voice.slug);
 };
