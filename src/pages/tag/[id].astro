@@ -17,6 +17,7 @@ const { entry } = Astro.props;
 const voice = await getCollection('voice', ({ data }) => {
   return data.tag?.some((tag) => tag.id === entry.id);
 });
+const sortedVoice = voice.sort((a, b) => (a.data.ruby > b.data.ruby ? 1 : -1));
 ---
 
 <GlobalLayout
@@ -24,6 +25,6 @@ const voice = await getCollection('voice', ({ data }) => {
   description={`「${SITE_NAME}」で収録しているヰ世界情緒さんの台詞のうち「${entry.data.title}」タグで分類されているボタンの一覧ページです。`}
 >
   <TopLayout>
-    <JButtonList buttonList={voice} client:load />
+    <JButtonList buttonList={sortedVoice} client:load />
   </TopLayout>
 </GlobalLayout>
