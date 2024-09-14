@@ -95,6 +95,7 @@ const genVoice = async (voice: CollectionEntry<'voice'>) => {
     ffmpeg(mp3FilePath)
       .setStartTime(voiceData.start)
       .setDuration(voiceData.during)
+      .audioFilters(`volume=${voiceData.gain}dB`)
       .on('end', () => {
         console.log(`Finished gen voice and saving: ${voicePath}`);
         resolve();

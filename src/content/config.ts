@@ -10,6 +10,7 @@ const voice = defineCollection({
     ytid: z.string(),
     start: z.number(),
     during: z.number(),
+    gain: z.number().default(0),
     tag: z.array(reference('tag')).optional(),
   }),
 });
