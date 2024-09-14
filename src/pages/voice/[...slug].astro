@@ -53,9 +53,11 @@ function changeFomatHms(sec: number) {
   </section>
 
   <Fragment>
-    <div class="flex justify-between pb-10">
+    <div class="flex flex-col justify-between gap-2 pb-10 md:flex-row">
       <div>{tagList && <TagList tagList={tagList} ver="voice" />}</div>
-      <SnsShare />
+      <div class="self-end">
+        <SnsShare />
+      </div>
     </div>
 
     <div class="flex flex-col items-center rounded-md border border-gray-300 p-5 shadow-md">
