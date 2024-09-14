@@ -1,14 +1,15 @@
 import mdx from '@astrojs/mdx';
+import sitemap from '@astrojs/sitemap';
 import solidJs from '@astrojs/solid-js';
 import tailwind from '@astrojs/tailwind';
 import icon from 'astro-icon';
 import purgecss from 'astro-purgecss';
+import robotsTxt from 'astro-robots-txt';
 import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://wisekai.cc',
-  trailingSlash: 'always',
   compressHTML: import.meta.env.PROD,
   integrations: [
     tailwind(),
@@ -24,5 +25,7 @@ export default defineConfig({
     mdx(),
     solidJs(),
     icon(),
+    robotsTxt(),
+    sitemap(),
   ],
 });

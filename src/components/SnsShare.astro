@@ -8,7 +8,7 @@ const hashtag = 'ヰ世界情緒';
 const text = 'バーチャルダークシンガーヰ世界情緒の声を再生できるボタンサイト';
 
 const genTwitterURL = () => {
-  const baseURL = new URL('http://twitter.com/share');
+  const baseURL = new URL('http://twitter.com/intent/tweet');
   baseURL.searchParams.append('url', encodedURL);
   baseURL.searchParams.append('text', text);
   baseURL.searchParams.append('hashtags', hashtag);

@@ -4,6 +4,7 @@ import 'dialog-polyfill/dialog-polyfill.css';
 import { ViewTransitions } from 'astro:transitions';
 import Header from '@components/Header.astro';
 import Footer from '@components/Footer.astro';
+import { SITE_NAME } from '@lib/constants';
 
 interface Props {
   title?: string;
@@ -11,11 +12,10 @@ interface Props {
   ogImage?: string;
 }
 
-const SITE_NAME = 'ヰ世界情緒ボタン';
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const {
   title = SITE_NAME,
-  description = '「ヰ世界情緒ボタン」は神椿スタジオ所属のバーチャルダークシンガーであるヰ世界情緒さんの配信である、「ヰ世界電子通信部」での台詞をボタン1つで再生可能なサイトです。',
+  description = `「${SITE_NAME}」は神椿スタジオ所属のバーチャルダークシンガーであるヰ世界情緒さんの配信である、「ヰ世界電子通信部」での台詞をボタン1つで再生可能なサイトです。`,
   ogImage = 'ogp.png',
 } = Astro.props;
 ---
@@ -43,6 +43,8 @@ const {
     <meta property="og:locale" content="ja_JP" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@aboutjobjust331" />
+    {/* sitemap */}
+    <link rel="sitemap" href="/sitemap-index.xml" />
     <ViewTransitions />
   </head>
   <body>

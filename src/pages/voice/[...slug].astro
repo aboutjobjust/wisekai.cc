@@ -8,6 +8,8 @@ import { getCollection, getEntry } from 'astro:content';
 import TagList from '@components/TagList.astro';
 import { YouTube } from 'astro-embed';
 import SnsShare from '@components/SnsShare.astro';
+import { SITE_NAME } from '@lib/constants';
+import { processVoice } from '@lib/processVoice';
 
 export async function getStaticPaths() {
   const voiceEntries = await getCollection('voice');
@@ -32,9 +34,15 @@ const ytInfo = await getYoutubeBasicInfo(entry.data.ytid);
 function changeFomatHms(sec: number) {
   return new Date(sec * 1000).toISOString().slice(11, 19);
 }
+
+await processVoice(entry);
 ---
 
-<GlobalLayout>
+<GlobalLayout
+  title={`${entry.data.text} | ボタン詳細 | ${SITE_NAME}`}
+  description={`「${SITE_NAME}」で収録しているヰ世界情緒さんの台詞「${entry.data.text}」についての詳細ページです。`}
+  ogImage={`/voice/ogp/${entry.slug}.png`}
+>
   <section slot="before-main" class="border-b-2 border-gray-200">
     <div class="mx-auto flex max-w-5xl flex-row-reverse items-center justify-between px-2 py-5">
       <a aria-label="閉じる" class="h-8 w-8" href="javascript:history.back()">
@@ -48,9 +56,11 @@ function changeFomatHms(sec: number) {
   </section>
 
   <Fragment>
-    <div class="flex justify-between pb-10">
+    <div class="flex flex-col justify-between gap-2 pb-10 md:flex-row">
       <div>{tagList && <TagList tagList={tagList} ver="voice" />}</div>
-      <SnsShare />
+      <div class="self-end">
+        <SnsShare />
+      </div>
     </div>
 
     <div class="flex flex-col items-center rounded-md border border-gray-300 p-5 shadow-md">
