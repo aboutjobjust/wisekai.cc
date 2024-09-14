@@ -90,15 +90,22 @@ export const JButton2: Component<JButton2Props> = (props) => {
   const handleButtonClick = () => {
     closeAllDialog();
     dialog.show();
-    setTimeout(() => {
-      audio.currentTime = 0;
+
+    audio.load();
+    audio.currentTime = 0;
+
+    if (audio.readyState === 4) {
       audio.play();
-    }, 1);
+    } else {
+      setTimeout(() => {
+        audio.play();
+      }, 50);
+    }
   };
 
   const handleDialogClose = () => {
+    if (audio.paused) return;
     audio.pause();
-    audio.currentTime = 0;
   };
 
   onMount(() => {
