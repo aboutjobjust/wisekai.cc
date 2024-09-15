@@ -1,20 +1,20 @@
 ---
 import GlobalLayout from '@layouts/GlobalLayout.astro';
 import { SITE_NAME } from '@lib/constants';
+import { LinkButton } from '@components/general/LinkButton';
+import { Box } from '@components/general/Box';
 
 const TITLE_404 = 'お探しのページが見つかりません';
 ---
 
 <GlobalLayout title={`${TITLE_404} | ${SITE_NAME}`}>
   <h1 class="mb-10 text-xl font-bold text-gray-600">{TITLE_404}</h1>
-  <section class="rounded-md border border-gray-300 p-5 text-center shadow-md">
+  <Box>
     <h2 class="mb-10 font-mono text-4xl font-bold">404 Not Found</h2>
     <p>
       申し訳ございませんが、お探しのページが見つかりませんでした。<br />
       URLが変更になったか、ページが削除された可能性があります。
     </p>
-    <div class="flex justify-center pt-14">
-      <a class="rounded-md bg-sky-800 p-4 text-white" href="/">TOPページへ戻る</a>
-    </div>
-  </section>
+    <LinkButton href="/">TOPページへ戻る</LinkButton>
+  </Box>
 </GlobalLayout>

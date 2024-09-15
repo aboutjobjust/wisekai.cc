@@ -1,0 +1,36 @@
+---
+import { IoReloadOutline } from 'solid-icons/io';
+import { WiTime4 } from 'solid-icons/wi';
+import { genModifiedDate } from '@lib/getModifiedDate';
+
+interface Props {
+  slug: string;
+}
+
+const { slug } = Astro.props;
+const { createdAt, lastModified } = await genModifiedDate(slug);
+
+const genJPDate = (isoStr: string) =>
+  new Date(isoStr)
+    .toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
+    .replaceAll('/', '.');
+
+const createdAtJP = genJPDate(createdAt);
+const lastModifiedJP = genJPDate(lastModified);
+const isModified = createdAtJP !== lastModifiedJP;
+---
+
+<div class="flex justify-end gap-5 pb-5 text-gray-500">
+  <time class="flex items-center gap-1" datetime={createdAt}>
+    <WiTime4 title="作成日" />
+    <span>{createdAtJP}</span>
+  </time>
+  {
+    isModified && (
+      <time class="flex items-center gap-1" datetime={lastModified}>
+        <IoReloadOutline title="更新日" />
+        <span>{lastModifiedJP}</span>
+      </time>
+    )
+  }
+</div>

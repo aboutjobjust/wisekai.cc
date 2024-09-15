@@ -3,11 +3,10 @@ import { Image } from 'astro:assets';
 import IconImage from '@assets/img/isekaijoucho.jpg';
 import { FaBrandsTwitter, FaBrandsYoutube, FaBrandsTiktok } from 'solid-icons/fa';
 import { JTimeLine } from './JTimeLine';
+import { Box } from '@components/general/Box';
 ---
 
-<aside
-  class="mt-20 flex flex-col items-center justify-center gap-5 rounded-md border border-gray-300 p-5 shadow-md md:flex-row"
->
+<Box class="mt-20 flex flex-col items-center justify-center gap-5 md:flex-row">
   <div>
     <figure class="flex flex-col items-center gap-2">
       <Image class="max-w-52 rounded-full" src={IconImage} width={IconImage.width / 2} densities={[1.5, 2]} alt="" />
@@ -42,4 +41,4 @@ import { JTimeLine } from './JTimeLine';
     </div>
   </div>
   <JTimeLine client:visible />
-</aside>
+</Box>
