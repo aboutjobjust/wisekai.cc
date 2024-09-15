@@ -1,13 +1,14 @@
 ---
 import { getYoutubeBasicInfo } from '@lib/ytInfo';
 import GlobalLayout from '@layouts/GlobalLayout.astro';
-import { AudioControl } from '@components/JButton';
-import { IoClose } from 'solid-icons/io';
+import { AudioControl } from '@components/general/JButton';
+import { IoClose, IoReloadOutline } from 'solid-icons/io';
 import { VsLinkExternal } from 'solid-icons/vs';
+import { WiTime4 } from 'solid-icons/wi';
 import { getCollection, getEntry } from 'astro:content';
-import TagList from '@components/TagList.astro';
+import TagList from '@components/general/TagList.astro';
 import { YouTube } from 'astro-embed';
-import SnsShare from '@components/SnsShare.astro';
+import SnsShare from '@components/voice/SnsShare.astro';
 import { SITE_NAME } from '@lib/constants';
 import { processVoice } from '@lib/processVoice';
 
@@ -19,6 +20,17 @@ export async function getStaticPaths() {
   }));
 }
 const { entry } = Astro.props;
+const { remarkPluginFrontmatter } = await entry.render();
+const { createdAt, lastModified } = remarkPluginFrontmatter;
+
+const genJPDate = (isoStr: string) =>
+  new Date(isoStr)
+    .toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })
+    .replaceAll('/', '.');
+console.log(genJPDate('2024-01-01'));
+const createdAtJP = genJPDate(createdAt);
+const lastModifiedJP = genJPDate(lastModified);
+const isModified = createdAtJP !== lastModifiedJP;
 
 const tagList = entry.data.tag
   ? await Promise.all(
@@ -56,6 +68,20 @@ await processVoice(entry);
   </section>
 
   <Fragment>
+    <div class="flex justify-end gap-5 pb-5 text-gray-500">
+      <time class="flex items-center gap-1" datetime={createdAt}>
+        <WiTime4 title="作成日" />
+        <span>{createdAtJP}</span>
+      </time>
+      {
+        isModified && (
+          <time class="flex items-center gap-1" datetime={lastModified}>
+            <IoReloadOutline title="更新日" />
+            <span>{lastModifiedJP}</span>
+          </time>
+        )
+      }
+    </div>
     <div class="flex flex-col justify-between gap-2 pb-10 md:flex-row">
       <div>{tagList && <TagList tagList={tagList} ver="voice" />}</div>
       <div class="self-end">
