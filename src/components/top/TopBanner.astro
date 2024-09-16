@@ -1,0 +1,32 @@
+---
+import '@splidejs/splide/css/skyblue';
+import Image from 'astro/components/Image.astro';
+import banner from '@assets/img/channels_banner.jpg';
+import bannerSub from '@assets/img/channels_banner_sub.jpg';
+---
+
+<div class="splide mb-10" aria-label="Youtubeチャンネル">
+  <div class="splide__track">
+    <ul class="splide__list">
+      <li class="splide__slide">
+        <a href="https://www.youtube.com/@isekaijoucho" target="_blank">
+          <Image class="banner" src={banner} alt="ヰ世界情緒 -Isekaijoucho- YouTubeチャンネル" loading="eager" />
+        </a>
+      </li>
+      <li class="splide__slide">
+        <a href="https://www.youtube.com/@isekaijoucho_sub" target="_blank">
+          <Image class="banner" src={bannerSub} alt="ヰ世界情緒 -ヰ世界電子通信部- YouTubeチャンネル" loading="eager" />
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<script>
+  import Splide from '@splidejs/splide';
+
+  new Splide('.splide').mount();
+  document.addEventListener('astro:after-swap', () => {
+    new Splide('.splide').mount();
+  });
+</script>

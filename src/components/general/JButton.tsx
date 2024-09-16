@@ -1,3 +1,4 @@
+import { Wa } from '@lib/webAudio';
 import type { CollectionEntry } from 'astro:content';
 import { FaSolidPause, FaSolidPlay } from 'solid-icons/fa';
 import { FiSearch } from 'solid-icons/fi';
@@ -78,8 +79,13 @@ type JButton2Props = {
 };
 export const JButton2: Component<JButton2Props> = (props) => {
   let dialog!: HTMLDialogElement;
-  let audio!: HTMLAudioElement;
+  //const [wa, setWa] = createSignal<Wa>();
+  let wa!: Wa;
+
   const btnData = props.button.data;
+  const audioFile = import.meta.env.PROD
+    ? `https://r2.wisekai.cc/${props.button.slug}.mp3`
+    : `/.tmp_own/${props.button.slug}.mp3?ver=${Math.random()}`;
 
   const closeAllDialog = () => {
     document
@@ -87,28 +93,20 @@ export const JButton2: Component<JButton2Props> = (props) => {
       .forEach((openDialog) => openDialog.close());
   };
 
-  const handleButtonClick = () => {
+  const handleButtonClick = async () => {
     closeAllDialog();
     dialog.show();
 
-    audio.load();
-    audio.currentTime = 0;
-
-    if (audio.readyState === 4) {
-      audio.play();
-    } else {
-      setTimeout(() => {
-        audio.play();
-      }, 50);
-    }
+    await wa.loadFile(audioFile);
+    wa.play();
   };
 
   const handleDialogClose = () => {
-    if (audio.paused) return;
-    audio.pause();
+    wa.stop();
   };
 
   onMount(() => {
+    wa = new Wa();
     loadDialogPolyfill(dialog);
   });
 
@@ -129,7 +127,7 @@ export const JButton2: Component<JButton2Props> = (props) => {
         <div class="mx-auto flex max-w-5xl flex-row-reverse items-center justify-between px-2">
           <CloseButton />
           <div class="flex items-center gap-2 md:gap-4">
-            <AudioControl slug={props.button.slug} ref={(el) => (audio = el)} />
+            <AudioControl slug={props.button.slug} wa={wa} />
             <a
               class="text-blue-800 underline"
               href={`/voice/${props.button.slug}/`}
@@ -155,23 +153,32 @@ const CloseButton: Component = () => (
 /*========== AudioControl ==========*/
 type AudioControlProps = {
   slug: string;
-  ref?: (el: HTMLAudioElement) => void;
+  wa?: Wa;
 };
 export const AudioControl: Component<AudioControlProps> = (props) => {
-  let audio!: HTMLAudioElement;
   const [isPlaying, setIsPlaying] = createSignal(false);
+
+  let wa!: Wa;
 
   const audioFile = import.meta.env.PROD
     ? `https://r2.wisekai.cc/${props.slug}.mp3`
     : `/.tmp_own/${props.slug}.mp3?ver=${Math.random()}`;
 
-  const handleButtonClick = () => {
+  const handleButtonClick = async () => {
     if (isPlaying()) {
-      audio.pause();
+      wa.stop();
     } else {
-      audio.play();
+      await wa.loadFile(audioFile);
+      wa.play();
     }
   };
+
+  onMount(() => {
+    wa = props.wa || new Wa();
+    wa.onChangePlaying(() => {
+      setIsPlaying(wa.isPlaying);
+    });
+  });
 
   return (
     <>
@@ -185,16 +192,6 @@ export const AudioControl: Component<AudioControlProps> = (props) => {
           <FaSolidPause size={32} class="text-gray-500" title="一時停止する" />
         </Show>
       </button>
-      <audio
-        src={audioFile}
-        ref={(el) => {
-          audio = el;
-          if (props.ref) props.ref(el);
-        }}
-        onPlay={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
-        onEnded={() => setIsPlaying(false)}
-      />
     </>
   );
 };

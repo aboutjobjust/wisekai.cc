@@ -18,6 +18,7 @@
     "@astrojs/solid-js": "^4.4.1",
     "@astrojs/tailwind": "^5.1.0",
     "@distube/ytdl-core": "^4.14.4",
+    "@splidejs/splide": "^4.1.4",
     "@types/fluent-ffmpeg": "^2.1.26",
     "astro": "^4.15.5",
     "astro-embed": "^0.7.2",
