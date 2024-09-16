@@ -6,15 +6,8 @@ import JInfoBox from '@components/top/JInfoBox.astro';
 
 import { getCollection } from 'astro:content';
 
-import type { CollectionEntry } from 'astro:content';
-
-function repeatArray(arr: CollectionEntry<'voice'>[], times: number) {
-  return Array.from({ length: times }, () => arr).flat();
-}
-
 const voice = await getCollection('voice');
-const repeatedArray = repeatArray(voice, 3);
-const sortedVoice = repeatedArray.sort((a, b) => (a.data.ruby > b.data.ruby ? 1 : -1));
+const sortedVoice = voice.sort((a, b) => (a.data.ruby > b.data.ruby ? 1 : -1));
 ---
 
 <GlobalLayout>

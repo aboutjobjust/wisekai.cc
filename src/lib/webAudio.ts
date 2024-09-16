@@ -48,7 +48,7 @@ export class Wa {
     this.audioElement = _audioElement!;
   }
 
-  public async play(time?: number): Promise<void> {
+  public async play(): Promise<void> {
     if (this.isPlaying) {
       this.stop();
     }
@@ -58,13 +58,12 @@ export class Wa {
       this.source = this.context.createBufferSource();
       this.source.buffer = this.buffer;
       this.source.connect(this.context.destination);
-      this.source.start(time);
+      this.source.start(0);
       this.isPlaying = true;
       this.source.onended = () => {
         this.isPlaying = false;
       };
     } else if (this.audioElement) {
-      this.audioElement.currentTime = time || 0;
       await new Promise<void>((resolve) => {
         setTimeout(() => {
           this.audioElement?.play();
@@ -78,14 +77,14 @@ export class Wa {
     }
   }
 
-  public stop(): void {
+  public stop(reset = true): void {
     if (this.isIOS && this.source) {
       this.source.stop();
       this.isPlaying = false;
     } else if (this.audioElement) {
       this.audioElement.pause();
-      this.audioElement.currentTime = 0;
       this.isPlaying = false;
+      if (reset) this.audioElement.currentTime = 0;
     }
   }
 

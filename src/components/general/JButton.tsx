@@ -170,7 +170,7 @@ export const AudioControl: Component<AudioControlProps> = (props) => {
 
   const handleButtonClick = async () => {
     if (isPlaying()) {
-      wa()?.stop();
+      wa()?.stop(false);
     } else {
       await wa()?.play();
     }
