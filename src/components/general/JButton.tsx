@@ -4,7 +4,14 @@ import { FaSolidPause, FaSolidPlay } from 'solid-icons/fa';
 import { FiSearch } from 'solid-icons/fi';
 import { IoClose } from 'solid-icons/io';
 import type { Component } from 'solid-js';
-import { For, Show, createSignal, createUniqueId, onMount } from 'solid-js';
+import {
+  For,
+  Show,
+  createEffect,
+  createSignal,
+  createUniqueId,
+  onMount,
+} from 'solid-js';
 import { createStore, reconcile } from 'solid-js/store';
 
 const loadDialogPolyfill = async (dialog: HTMLDialogElement) => {
@@ -79,8 +86,7 @@ type JButton2Props = {
 };
 export const JButton2: Component<JButton2Props> = (props) => {
   let dialog!: HTMLDialogElement;
-  //const [wa, setWa] = createSignal<Wa>();
-  let wa!: Wa;
+  const [wa, setWa] = createSignal<Wa>();
 
   const btnData = props.button.data;
   const audioFile = import.meta.env.PROD
@@ -96,17 +102,15 @@ export const JButton2: Component<JButton2Props> = (props) => {
   const handleButtonClick = async () => {
     closeAllDialog();
     dialog.show();
-
-    await wa.loadFile(audioFile);
-    wa.play();
+    await wa()?.play();
   };
 
   const handleDialogClose = () => {
-    wa.stop();
+    wa()?.stop();
   };
 
-  onMount(() => {
-    wa = new Wa();
+  onMount(async () => {
+    setWa(await Wa.init(audioFile));
     loadDialogPolyfill(dialog);
   });
 
@@ -127,7 +131,7 @@ export const JButton2: Component<JButton2Props> = (props) => {
         <div class="mx-auto flex max-w-5xl flex-row-reverse items-center justify-between px-2">
           <CloseButton />
           <div class="flex items-center gap-2 md:gap-4">
-            <AudioControl slug={props.button.slug} wa={wa} />
+            <AudioControl slug={props.button.slug} wa={wa()} />
             <a
               class="text-blue-800 underline"
               href={`/voice/${props.button.slug}/`}
@@ -158,7 +162,7 @@ type AudioControlProps = {
 export const AudioControl: Component<AudioControlProps> = (props) => {
   const [isPlaying, setIsPlaying] = createSignal(false);
 
-  let wa!: Wa;
+  const [wa, setWa] = createSignal<Wa>();
 
   const audioFile = import.meta.env.PROD
     ? `https://r2.wisekai.cc/${props.slug}.mp3`
@@ -166,17 +170,18 @@ export const AudioControl: Component<AudioControlProps> = (props) => {
 
   const handleButtonClick = async () => {
     if (isPlaying()) {
-      wa.stop();
+      wa()?.stop();
     } else {
-      await wa.loadFile(audioFile);
-      wa.play();
+      await wa()?.play();
     }
   };
 
-  onMount(() => {
-    wa = props.wa || new Wa();
-    wa.onChangePlaying(() => {
-      setIsPlaying(wa.isPlaying);
+  createEffect(async () => {
+    const _wa = props.wa || (await Wa.init(audioFile));
+    setWa(_wa);
+    wa()?.onChangePlaying(() => {
+      const bool = wa()?.isPlaying || false;
+      setIsPlaying(bool);
     });
   });
 
