@@ -10,11 +10,6 @@ export class Wa {
   public static async init(src: string) {
     const context = new (window.AudioContext ||
       (window as any).webkitAudioContext)();
-    context.onstatechange = () => {
-      if (context.state !== 'running') {
-        context.resume();
-      }
-    };
 
     if (/iP(hone|(o|a)d)/.test(navigator.userAgent)) {
       const buffer = await this.loadFile(src, context);
@@ -29,7 +24,9 @@ export class Wa {
     src: string,
     context: AudioContext,
   ): Promise<AudioBuffer> {
-    const response = await fetch(src);
+    const response = await fetch(src, {
+      mode: 'cors',
+    });
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
