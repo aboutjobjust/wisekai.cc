@@ -1,14 +1,15 @@
 ---
-import { getYoutubeBasicInfo } from '@lib/ytInfo';
-import GlobalLayout from '@layouts/GlobalLayout.astro';
-import { AudioControl } from '@components/JButton';
-import { IoClose } from 'solid-icons/io';
-import { VsLinkExternal } from 'solid-icons/vs';
 import { getCollection, getEntry } from 'astro:content';
-import TagList from '@components/TagList.astro';
-import { YouTube } from 'astro-embed';
-import SnsShare from '@components/SnsShare.astro';
 import { SITE_NAME } from '@lib/constants';
+
+import GlobalLayout from '@layouts/GlobalLayout.astro';
+import TopBar from '@components/voice/TopBar.astro';
+import TagList from '@components/general/TagList.astro';
+import SnsShare from '@components/voice/SnsShare.astro';
+import CreatedDate from '@components/voice/CreatedDate.astro';
+import YTInfoBox from '@components/voice/YTInfoBox.astro';
+import { LinkButton } from '@components/general/LinkButton';
+
 import { processVoice } from '@lib/processVoice';
 
 export async function getStaticPaths() {
@@ -18,8 +19,8 @@ export async function getStaticPaths() {
     props: { entry },
   }));
 }
-const { entry } = Astro.props;
 
+const { entry } = Astro.props;
 const tagList = entry.data.tag
   ? await Promise.all(
       entry.data.tag.map(async (tag) => {
@@ -29,12 +30,6 @@ const tagList = entry.data.tag
     )
   : undefined;
 
-const ytInfo = await getYoutubeBasicInfo(entry.data.ytid);
-
-function changeFomatHms(sec: number) {
-  return new Date(sec * 1000).toISOString().slice(11, 19);
-}
-
 await processVoice(entry);
 ---
 
@@ -43,46 +38,17 @@ await processVoice(entry);
   description={`「${SITE_NAME}」で収録しているヰ世界情緒さんの台詞「${entry.data.text}」についての詳細ページです。`}
   ogImage={`/voice/ogp/${entry.slug}.png`}
 >
-  <section slot="before-main" class="border-b-2 border-gray-200">
-    <div class="mx-auto flex max-w-5xl flex-row-reverse items-center justify-between px-2 py-5">
-      <a aria-label="閉じる" class="h-8 w-8" href="javascript:history.back()">
-        <IoClose size={32} class="text-gray-500" aria-hidden="true" />
-      </a>
-      <div class="flex items-center gap-2 md:gap-4">
-        <AudioControl slug={entry.slug} client:load />
-        <h1 class="text-xl font-bold text-gray-600">{entry.data.text}</h1>
-      </div>
-    </div>
-  </section>
+  <TopBar voice={entry} slot="before-main" />
 
   <Fragment>
+    <CreatedDate slug={entry.slug} />
     <div class="flex flex-col justify-between gap-2 pb-10 md:flex-row">
       <div>{tagList && <TagList tagList={tagList} ver="voice" />}</div>
       <div class="self-end">
         <SnsShare />
       </div>
     </div>
-
-    <div class="flex flex-col items-center rounded-md border border-gray-300 p-5 shadow-md">
-      <h2 class="mb-2 text-xl font-bold">{ytInfo.videoDetails.title}</h2>
-      <p class="mb-8">
-        再生区間：
-        <a
-          class="text-blue-800 underline"
-          href={`https://www.youtube.com/watch?v=${entry.data.ytid}&t=${Math.floor(entry.data.start)}s`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {changeFomatHms(Math.floor(entry.data.start))} -
-          {changeFomatHms(Math.ceil(entry.data.start + entry.data.during))}
-          <VsLinkExternal class="ml-1 inline-block text-gray-500" />
-        </a>
-      </p>
-      <YouTube id={entry.data.ytid} params={`start=${Math.floor(entry.data.start)}`} class="w-[560px] max-w-full" />
-    </div>
-
-    <div class="flex justify-center py-10">
-      <a class="rounded-md bg-sky-800 p-4 text-white" href="/">他のボタンへ</a>
-    </div>
+    <YTInfoBox voice={entry} />
+    <LinkButton href="/">他のボタンへ</LinkButton>
   </Fragment>
 </GlobalLayout>

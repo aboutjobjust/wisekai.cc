@@ -1,0 +1,23 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { IoClose } from 'solid-icons/io';
+import { AudioControl } from '@components/general/JButton';
+
+interface Props {
+  voice: CollectionEntry<'voice'>;
+}
+
+const { voice } = Astro.props;
+---
+
+<section slot="before-main" class="border-b-2 border-gray-200">
+  <div class="mx-auto flex max-w-5xl flex-row-reverse items-center justify-between px-2 py-5">
+    <a aria-label="閉じる" class="h-8 w-8" href="javascript:history.back()">
+      <IoClose size={32} class="text-gray-500" aria-hidden="true" />
+    </a>
+    <div class="flex items-center gap-2 md:gap-4">
+      <AudioControl slug={voice.slug} client:load />
+      <h1 class="text-xl font-bold text-gray-600">{voice.data.text}</h1>
+    </div>
+  </div>
+</section>

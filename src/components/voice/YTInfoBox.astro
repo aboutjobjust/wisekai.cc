@@ -1,0 +1,36 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { YouTube } from 'astro-embed';
+import { VsLinkExternal } from 'solid-icons/vs';
+import { getYoutubeBasicInfo } from '@lib/ytInfo';
+import { Box } from '@components/general/Box';
+
+interface Props {
+  voice: CollectionEntry<'voice'>;
+}
+
+const { voice } = Astro.props;
+const ytInfo = await getYoutubeBasicInfo(voice.data.ytid);
+
+function changeFomatHms(sec: number) {
+  return new Date(sec * 1000).toISOString().slice(11, 19);
+}
+---
+
+<Box class="flex flex-col items-center">
+  <h2 class="mb-2 text-xl font-bold">{ytInfo.videoDetails.title}</h2>
+  <p class="mb-8">
+    再生区間：
+    <a
+      class="text-blue-800 underline"
+      href={`https://www.youtube.com/watch?v=${voice.data.ytid}&t=${Math.floor(voice.data.start)}s`}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      {changeFomatHms(Math.floor(voice.data.start))} -
+      {changeFomatHms(Math.ceil(voice.data.start + voice.data.during))}
+      <VsLinkExternal class="ml-1 inline-block text-gray-500" />
+    </a>
+  </p>
+  <YouTube id={voice.data.ytid} params={`start=${Math.floor(voice.data.start)}`} class="w-[560px] max-w-full" />
+</Box>

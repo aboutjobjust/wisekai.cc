@@ -1,9 +1,17 @@
+import { Wa } from '@lib/webAudio';
 import type { CollectionEntry } from 'astro:content';
 import { FaSolidPause, FaSolidPlay } from 'solid-icons/fa';
 import { FiSearch } from 'solid-icons/fi';
 import { IoClose } from 'solid-icons/io';
 import type { Component } from 'solid-js';
-import { For, Show, createSignal, createUniqueId, onMount } from 'solid-js';
+import {
+  For,
+  Show,
+  createEffect,
+  createSignal,
+  createUniqueId,
+  onMount,
+} from 'solid-js';
 import { createStore, reconcile } from 'solid-js/store';
 
 const loadDialogPolyfill = async (dialog: HTMLDialogElement) => {
@@ -78,8 +86,12 @@ type JButton2Props = {
 };
 export const JButton2: Component<JButton2Props> = (props) => {
   let dialog!: HTMLDialogElement;
-  let audio!: HTMLAudioElement;
+  const [wa, setWa] = createSignal<Wa>();
+
   const btnData = props.button.data;
+  const audioFile = import.meta.env.PROD
+    ? `https://r2.wisekai.cc/${props.button.slug}.mp3`
+    : `/.tmp_own/${props.button.slug}.mp3?ver=${Math.random()}`;
 
   const closeAllDialog = () => {
     document
@@ -87,28 +99,18 @@ export const JButton2: Component<JButton2Props> = (props) => {
       .forEach((openDialog) => openDialog.close());
   };
 
-  const handleButtonClick = () => {
+  const handleButtonClick = async () => {
     closeAllDialog();
     dialog.show();
-
-    audio.load();
-    audio.currentTime = 0;
-
-    if (audio.readyState === 4) {
-      audio.play();
-    } else {
-      setTimeout(() => {
-        audio.play();
-      }, 50);
-    }
+    await wa()?.play();
   };
 
   const handleDialogClose = () => {
-    if (audio.paused) return;
-    audio.pause();
+    wa()?.stop();
   };
 
-  onMount(() => {
+  onMount(async () => {
+    setWa(await Wa.init(audioFile));
     loadDialogPolyfill(dialog);
   });
 
@@ -129,7 +131,7 @@ export const JButton2: Component<JButton2Props> = (props) => {
         <div class="mx-auto flex max-w-5xl flex-row-reverse items-center justify-between px-2">
           <CloseButton />
           <div class="flex items-center gap-2 md:gap-4">
-            <AudioControl slug={props.button.slug} ref={(el) => (audio = el)} />
+            <AudioControl slug={props.button.slug} wa={wa()} />
             <a
               class="text-blue-800 underline"
               href={`/voice/${props.button.slug}/`}
@@ -155,23 +157,33 @@ const CloseButton: Component = () => (
 /*========== AudioControl ==========*/
 type AudioControlProps = {
   slug: string;
-  ref?: (el: HTMLAudioElement) => void;
+  wa?: Wa;
 };
 export const AudioControl: Component<AudioControlProps> = (props) => {
-  let audio!: HTMLAudioElement;
   const [isPlaying, setIsPlaying] = createSignal(false);
+
+  const [wa, setWa] = createSignal<Wa>();
 
   const audioFile = import.meta.env.PROD
     ? `https://r2.wisekai.cc/${props.slug}.mp3`
     : `/.tmp_own/${props.slug}.mp3?ver=${Math.random()}`;
 
-  const handleButtonClick = () => {
+  const handleButtonClick = async () => {
     if (isPlaying()) {
-      audio.pause();
+      wa()?.stop(false);
     } else {
-      audio.play();
+      await wa()?.play();
     }
   };
+
+  createEffect(async () => {
+    const _wa = props.wa || (await Wa.init(audioFile));
+    setWa(_wa);
+    wa()?.onChangePlaying(() => {
+      const bool = wa()?.isPlaying || false;
+      setIsPlaying(bool);
+    });
+  });
 
   return (
     <>
@@ -185,16 +197,6 @@ export const AudioControl: Component<AudioControlProps> = (props) => {
           <FaSolidPause size={32} class="text-gray-500" title="一時停止する" />
         </Show>
       </button>
-      <audio
-        src={audioFile}
-        ref={(el) => {
-          audio = el;
-          if (props.ref) props.ref(el);
-        }}
-        onPlay={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
-        onEnded={() => setIsPlaying(false)}
-      />
     </>
   );
 };
