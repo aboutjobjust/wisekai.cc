@@ -26,7 +26,5 @@ import bannerSub from '@assets/img/channels_banner_sub.jpg';
   import Splide from '@splidejs/splide';
 
   new Splide('.splide').mount();
-  document.addEventListener('astro:after-swap', () => {
-    new Splide('.splide').mount();
-  });
+  console.log('splide loaded');
 </script>
