@@ -1,5 +1,4 @@
 ---
-import '@splidejs/splide/css/skyblue';
 import Image from 'astro/components/Image.astro';
 import banner from '@assets/img/channels_banner.jpg';
 import bannerSub from '@assets/img/channels_banner_sub.jpg';
@@ -22,9 +21,16 @@ import bannerSub from '@assets/img/channels_banner_sub.jpg';
   </div>
 </div>
 
-<script>
-  import Splide from '@splidejs/splide';
-
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css" />
+<script is:inline src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+<script is:inline>
   new Splide('.splide').mount();
-  console.log('splide loaded');
 </script>
+
+<style>
+  .banner {
+    margin-left: -20%;
+    clip-path: inset(0 20% 0 20%);
+    max-width: 140%;
+  }
+</style>
