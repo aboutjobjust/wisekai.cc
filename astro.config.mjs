@@ -14,6 +14,9 @@ export default defineConfig({
   integrations: [
     tailwind(),
     purgecss({
+      safelist: {
+        greedy: [/^splide/],
+      },
       extractors: [
         {
           extractor: (content) =>
@@ -28,4 +31,9 @@ export default defineConfig({
     robotsTxt(),
     sitemap(),
   ],
+  vite: {
+    ssr: {
+      noExternal: ['@splidejs'],
+    },
+  },
 });

@@ -21,9 +21,10 @@ import bannerSub from '@assets/img/channels_banner_sub.jpg';
   </div>
 </div>
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css" />
-<script is:inline src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
-<script is:inline>
+<script>
+  import '@splidejs/splide/css/skyblue';
+  import Splide from '@splidejs/splide';
+
   new Splide('.splide').mount();
 </script>
 
