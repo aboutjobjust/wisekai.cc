@@ -1,0 +1,46 @@
+---
+import type { MarkdownLayoutProps } from 'astro';
+import GlobalLayout from './GlobalLayout.astro';
+import { SITE_NAME } from '@lib/constants';
+
+type Props = MarkdownLayoutProps<{
+  title: string;
+  description: string;
+}>;
+
+const { frontmatter } = Astro.props;
+---
+
+<GlobalLayout title={`${frontmatter.title} | ${SITE_NAME}`} description={frontmatter.description}>
+  <h1 class="mb-3 text-xl font-bold text-gray-600">{frontmatter.title}</h1>
+  <article class="md-article">
+    <slot />
+  </article>
+</GlobalLayout>
+
+<style lang="scss" is:global>
+  .md-article {
+    h2 {
+      color: #4b5563;
+      font-size: 2rem;
+      font-weight: bold;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+    h3 {
+      color: #4b5563;
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
+    li {
+      padding-left: 1em;
+      text-indent: -1em;
+      &::before {
+        content: '・';
+        padding-right: 0.5em;
+      }
+    }
+  }
+</style>
