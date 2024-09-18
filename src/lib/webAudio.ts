@@ -1,100 +1,54 @@
+import { Howl } from 'howler';
+
 export class Wa {
-  private context: AudioContext;
-  private buffer: AudioBuffer;
-  private source: AudioBufferSourceNode | undefined;
-  private audioElement: HTMLAudioElement | undefined;
+  private sound: Howl;
   private _isPlaying = false;
-  private changePlayingListener: () => void = () => {};
-  private isIOS = /iP(hone|(o|a)d)/.test(navigator.userAgent);
+  private changeListener: () => void = () => {};
 
-  public static async init(src: string) {
-    const context = new (window.AudioContext ||
-      (window as any).webkitAudioContext)();
-
-    if (/iP(hone|(o|a)d)/.test(navigator.userAgent)) {
-      const buffer = await this.loadFile(src, context);
-      return new this(context, buffer, undefined);
-    } else {
-      const audioElement = new Audio(src);
-      return new this(context, undefined, audioElement);
-    }
-  }
-
-  private static async loadFile(
-    src: string,
-    context: AudioContext,
-  ): Promise<AudioBuffer> {
-    const response = await fetch(src, {
-      mode: 'cors',
+  constructor(src: string) {
+    this.sound = new Howl({
+      src: [src],
+      onplay: () => {
+        this.isPlaying = true;
+      },
+      onpause: () => {
+        this.isPlaying = false;
+      },
+      onend: () => {
+        this.isPlaying = false;
+        this.sound.seek(0);
+      },
     });
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    const data = await response.arrayBuffer();
-    const buffer = await context.decodeAudioData(data);
-    return buffer;
   }
 
-  private constructor(
-    _context: AudioContext,
-    _buffer: AudioBuffer | undefined,
-    _audioElement: HTMLAudioElement | undefined,
-  ) {
-    this.context = _context;
-    this.buffer = _buffer!;
-    this.audioElement = _audioElement!;
-  }
-
-  public async play(): Promise<void> {
+  public play(): void {
     if (this.isPlaying) {
       this.stop();
     }
 
-    if (this.isIOS) {
-      await this.context.resume();
-      this.source = this.context.createBufferSource();
-      this.source.buffer = this.buffer;
-      this.source.connect(this.context.destination);
-      this.source.start(0);
-      this.isPlaying = true;
-      this.source.onended = () => {
-        this.isPlaying = false;
-      };
-    } else if (this.audioElement) {
-      await new Promise<void>((resolve) => {
-        setTimeout(() => {
-          this.audioElement?.play();
-          resolve();
-        }, 50);
-      });
-      this.isPlaying = true;
-      this.audioElement.onended = () => {
-        this.isPlaying = false;
-      };
-    }
+    setTimeout(() => {
+      this.sound.play();
+    }, 50);
   }
 
   public stop(reset = true): void {
-    if (this.isIOS && this.source) {
-      this.source.stop();
-      this.isPlaying = false;
-    } else if (this.audioElement) {
-      this.audioElement.pause();
-      this.isPlaying = false;
-      if (reset) this.audioElement.currentTime = 0;
+    this.sound.pause();
+
+    if (reset) {
+      this.sound.seek(0);
     }
   }
 
-  public onChangePlaying(_changePlayingListener: () => void): void {
-    this.changePlayingListener = _changePlayingListener;
+  public onChange(listener: () => void): void {
+    this.changeListener = listener;
   }
 
-  set isPlaying(val: boolean) {
+  private set isPlaying(val: boolean) {
     this._isPlaying = val;
-    this.changePlayingListener();
+    this.changeListener();
   }
 
-  get isPlaying() {
+  public get isPlaying() {
     return this._isPlaying;
   }
 }

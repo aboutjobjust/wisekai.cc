@@ -99,18 +99,18 @@ export const JButton2: Component<JButton2Props> = (props) => {
       .forEach((openDialog) => openDialog.close());
   };
 
-  const handleButtonClick = async () => {
+  const handleButtonClick = () => {
     closeAllDialog();
     dialog.show();
-    await wa()?.play();
+    wa()?.play();
   };
 
   const handleDialogClose = () => {
     wa()?.stop();
   };
 
-  onMount(async () => {
-    setWa(await Wa.init(audioFile));
+  onMount(() => {
+    setWa(new Wa(audioFile));
     loadDialogPolyfill(dialog);
   });
 
@@ -168,18 +168,18 @@ export const AudioControl: Component<AudioControlProps> = (props) => {
     ? `https://r2.wisekai.cc/${props.slug}.mp3`
     : `/.tmp_own/${props.slug}.mp3?ver=${Math.random()}`;
 
-  const handleButtonClick = async () => {
+  const handleButtonClick = () => {
     if (isPlaying()) {
       wa()?.stop(false);
     } else {
-      await wa()?.play();
+      wa()?.play();
     }
   };
 
-  createEffect(async () => {
-    const _wa = props.wa || (await Wa.init(audioFile));
+  createEffect(() => {
+    const _wa = props.wa || new Wa(audioFile);
     setWa(_wa);
-    wa()?.onChangePlaying(() => {
+    wa()?.onChange(() => {
       const bool = wa()?.isPlaying || false;
       setIsPlaying(bool);
     });
