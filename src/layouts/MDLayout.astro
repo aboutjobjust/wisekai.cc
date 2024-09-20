@@ -1,0 +1,20 @@
+---
+import type { MarkdownLayoutProps } from 'astro';
+import GlobalLayout from './GlobalLayout.astro';
+import Article from '@components/general/Article.astro';
+import { SITE_NAME } from '@lib/constants';
+
+type Props = MarkdownLayoutProps<{
+  title: string;
+  description: string;
+}>;
+
+const { frontmatter } = Astro.props;
+---
+
+<GlobalLayout title={`${frontmatter.title} | ${SITE_NAME}`} description={frontmatter.description}>
+  <h1 class="mb-3 text-xl font-bold text-gray-600">{frontmatter.title}</h1>
+  <Article>
+    <slot />
+  </Article>
+</GlobalLayout>
