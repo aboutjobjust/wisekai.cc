@@ -1,0 +1,41 @@
+---
+import GlobalLayout from '@layouts/GlobalLayout.astro';
+import Article from '@components/general/Article.astro';
+import { SITE_NAME } from '@lib/constants';
+import { getCollection } from 'astro:content';
+
+const TITLE = 'サイトマップ';
+
+const tagEntries = await getCollection('tag');
+const voiceEntries = await getCollection('voice');
+---
+
+<GlobalLayout title={`${TITLE} | ${SITE_NAME}`}>
+  <h1 class="mb-10 text-xl font-bold text-gray-600">{TITLE}</h1>
+
+  <Article>
+    <h2><a href="/">TOPページ</a></h2>
+
+    <h2>タグ</h2>
+    <ul>
+      {
+        tagEntries.map((tag) => (
+          <li>
+            <a href={`/tag/${tag.id}/`}>{tag.data.title}</a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <h2>ボイス</h2>
+    <ul>
+      {
+        voiceEntries.map((voice) => (
+          <li>
+            <a href={`/voice/${voice.slug}/`}>{voice.data.text}</a>
+          </li>
+        ))
+      }
+    </ul>
+  </Article>
+</GlobalLayout>
