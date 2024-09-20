@@ -1,0 +1,30 @@
+---
+import GlobalLayout from '@layouts/GlobalLayout.astro';
+import { SITE_NAME } from '@lib/constants';
+import { LinkButton } from '@components/general/LinkButton';
+import { Box } from '@components/general/Box';
+
+const TITLE = 'コンタクト';
+---
+
+<GlobalLayout title={`${TITLE} | ${SITE_NAME}`}>
+  <h1 class="mb-10 text-xl font-bold text-gray-600">{TITLE}</h1>
+  <Box>
+    <h2 class="mb-10 text-2xl font-bold text-gray-600">コンタクトフォーム</h2>
+    <form class="flex w-full flex-col gap-5" action="https://ssgform.com/s/wRCyzt1wdVBU" method="post">
+      <label class="input input-bordered flex items-center gap-2">
+        Name
+        <input type="text" name="name" class="grow" placeholder="ヰ世界 太郎" required />
+      </label>
+      <label class="input input-bordered flex items-center gap-2">
+        Email
+        <input type="email" name="email" class="grow" placeholder="isekai@example.com" required />
+      </label>
+      <textarea name="comments" placeholder="お問い合わせ内容" class="textarea textarea-bordered w-full" required
+      ></textarea>
+      <div>
+        <button class="btn btn-wide" type="submit">送信する</button>
+      </div>
+    </form>
+  </Box>
+</GlobalLayout>
