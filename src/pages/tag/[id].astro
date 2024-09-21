@@ -24,7 +24,7 @@ const sortedVoice = voice.sort((a, b) => (a.data.ruby > b.data.ruby ? 1 : -1));
   title={`${entry.data.title} | タグ一覧 | ${SITE_NAME}`}
   description={`「${SITE_NAME}」で収録しているヰ世界情緒さんの台詞のうち「${entry.data.title}」タグで分類されているボタンの一覧ページです。`}
 >
-  <TopLayout>
+  <TopLayout count={voice.length}>
     <JButtonList buttonList={sortedVoice} client:load />
   </TopLayout>
 </GlobalLayout>

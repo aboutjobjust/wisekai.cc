@@ -11,7 +11,7 @@ const sortedVoice = voice.sort((a, b) => (a.data.ruby > b.data.ruby ? 1 : -1));
 ---
 
 <GlobalLayout>
-  <TopLayout>
+  <TopLayout count={voice.length}>
     <JButtonList buttonList={sortedVoice} client:load />
     <JInfoBox />
   </TopLayout>
