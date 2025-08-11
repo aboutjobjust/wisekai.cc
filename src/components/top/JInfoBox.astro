@@ -2,34 +2,33 @@
 import { Image } from 'astro:assets';
 import IconImage from '@assets/img/isekaijoucho.jpg';
 import { FaBrandsTwitter, FaBrandsYoutube, FaBrandsTiktok } from 'solid-icons/fa';
-import { JTimeLine } from './JTimeLine';
 import { Box } from '@components/general/Box';
 ---
 
-<Box class="mt-20 flex flex-col items-center justify-center gap-5 md:flex-row">
-  <div>
+<Box class="mt-20">
+  <div class="flex flex-col gap-8 md:flex-row">
     <figure class="flex flex-col items-center gap-2">
       <Image class="max-w-52 rounded-full" src={IconImage} width={IconImage.width / 2} densities={[1.5, 2]} alt="" />
-      <figcaption class="text-center font-sans font-bold text-blue-900">ヰ世界情緒 /<br />isekaijoucho</figcaption>
     </figure>
-    <ul class="flex items-center justify-center gap-6 p-5">
-      <li>
-        <a href="https://www.youtube.com/channel/UCah4_WVjmr8XA7i5aigwV-Q" target="_blank" rel="noopener noreferrer">
-          <FaBrandsYoutube size={32} color="#FF0000" title="YouTube" />
-        </a>
-      </li>
-      <li>
-        <a href="https://twitter.com/isekaijoucho" target="_blank" rel="noopener noreferrer">
-          <FaBrandsTwitter size={32} color="#1d9bf0" title="twitter" />
-        </a>
-      </li>
-      <li>
-        <a href="https://www.tiktok.com/@isekaijoucho" target="_blank" rel="noopener noreferrer">
-          <FaBrandsTiktok size={26} color="#000000" title="TikTok" />
-        </a>
-      </li>
-    </ul>
-    <div class="pt-4">
+    <div class="text-left">
+      <h2 class="mb-2 text-center font-sans text-xl font-bold text-blue-900 md:text-left">ヰ世界情緒 / isekaijoucho</h2>
+      <ul class="mb-8 flex items-center justify-center gap-3 md:justify-start">
+        <li>
+          <a href="https://www.youtube.com/channel/UCah4_WVjmr8XA7i5aigwV-Q" target="_blank" rel="noopener noreferrer">
+            <FaBrandsYoutube size={32} color="#FF0000" title="YouTube" />
+          </a>
+        </li>
+        <li>
+          <a href="https://twitter.com/isekaijoucho" target="_blank" rel="noopener noreferrer">
+            <FaBrandsTwitter size={32} color="#1d9bf0" title="twitter" />
+          </a>
+        </li>
+        <li>
+          <a href="https://www.tiktok.com/@isekaijoucho" target="_blank" rel="noopener noreferrer">
+            <FaBrandsTiktok size={26} color="#000000" title="TikTok" />
+          </a>
+        </li>
+      </ul>
       <p class="break-words break-keep">
         自らの歌と<wbr />創作で<wbr />世界を<wbr />表現することを<wbr />夢見る、<wbr />バーチャルダークシンガー。<br />
         力強く儚い歌声で、<wbr />“ヰ世界情緒”<wbr />というキャンバス<wbr />の上に闇と光、<wbr />新しい物語を紡ぐ。
@@ -40,5 +39,4 @@ import { Box } from '@components/general/Box';
       </p>
     </div>
   </div>
-  <JTimeLine client:visible />
 </Box>

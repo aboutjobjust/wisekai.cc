@@ -1,5 +1,4 @@
 ---
-import GlobalLayout from '@layouts/GlobalLayout.astro';
 import TopLayout from '@layouts/TopLayout.astro';
 import { JButtonList } from '@components/general/JButton';
 import JInfoBox from '@components/top/JInfoBox.astro';
@@ -10,9 +9,7 @@ const voice = await getCollection('voice');
 const sortedVoice = voice.sort((a, b) => (a.data.ruby > b.data.ruby ? 1 : -1));
 ---
 
-<GlobalLayout>
-  <TopLayout count={voice.length}>
-    <JButtonList buttonList={sortedVoice} client:load />
-    <JInfoBox />
-  </TopLayout>
-</GlobalLayout>
+<TopLayout count={voice.length}>
+  <JButtonList buttonList={sortedVoice} client:load />
+  <JInfoBox />
+</TopLayout>

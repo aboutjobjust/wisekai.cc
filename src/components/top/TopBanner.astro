@@ -1,48 +1,23 @@
 ---
 import Image from 'astro/components/Image.astro';
-import bannerSunFlower from '@assets/img/channels_banner_sunflower.jpg';
-import banner from '@assets/img/channels_banner.jpg';
-import bannerSub from '@assets/img/channels_banner_sub.jpg';
+import mv from '@assets/img/wisekai_mv_pc.jpg';
 ---
 
-<div class="splide mb-10" aria-label="Youtubeチャンネル">
-  <div class="splide__track">
-    <ul class="splide__list">
-      <li class="splide__slide">
-        <a href="https://www.youtube.com/@isekaijoucho" target="_blank" rel="noopener noreferrer">
-          <Image
-            class="banner"
-            src={bannerSunFlower}
-            alt="ヰ世界情緒 -Isekaijoucho- YouTubeチャンネル"
-            loading="eager"
-          />
-        </a>
-      </li>
-      <li class="splide__slide">
-        <a href="https://www.youtube.com/@isekaijoucho" target="_blank" rel="noopener noreferrer">
-          <Image class="banner" src={banner} alt="ヰ世界情緒 -Isekaijoucho- YouTubeチャンネル" />
-        </a>
-      </li>
-      <li class="splide__slide">
-        <a href="https://www.youtube.com/@isekaijoucho_sub" target="_blank" rel="noopener noreferrer">
-          <Image class="banner" src={bannerSub} alt="ヰ世界情緒 -ヰ世界電子通信部- YouTubeチャンネル" />
-        </a>
-      </li>
-    </ul>
-  </div>
-</div>
-
-<script>
-  import '@splidejs/splide/css/skyblue';
-  import Splide from '@splidejs/splide';
-
-  new Splide('.splide', { type: 'loop' }).mount();
-</script>
+<a href="/" class="flex justify-center overflow-hidden bg-gray-200">
+  <Image class="mv" src={mv} alt="ヰ世界情緒 -Isekaijoucho- YouTubeチャンネル" />
+</a>
 
 <style>
-  .banner {
-    margin-left: -20%;
+  .mv {
     clip-path: inset(0 20% 0 20%);
-    max-width: 140%;
+    margin-left: -10%;
+    max-width: 180%;
+  }
+  @media (min-width: 768px) {
+    .mv {
+      clip-path: none;
+      margin-left: 0;
+      max-width: 100%;
+    }
   }
 </style>

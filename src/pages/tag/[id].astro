@@ -1,5 +1,4 @@
 ---
-import GlobalLayout from '@layouts/GlobalLayout.astro';
 import TopLayout from '@layouts/TopLayout.astro';
 import { JButtonList } from '@components/general/JButton';
 import { getCollection } from 'astro:content';
@@ -20,11 +19,10 @@ const voice = await getCollection('voice', ({ data }) => {
 const sortedVoice = voice.sort((a, b) => (a.data.ruby > b.data.ruby ? 1 : -1));
 ---
 
-<GlobalLayout
+<TopLayout
   title={`${entry.data.title} | タグ一覧 | ${SITE_NAME}`}
   description={`「${SITE_NAME}」で収録しているヰ世界情緒さんの台詞のうち「${entry.data.title}」タグで分類されているボタンの一覧ページです。`}
+  count={voice.length}
 >
-  <TopLayout count={voice.length}>
-    <JButtonList buttonList={sortedVoice} client:load />
-  </TopLayout>
-</GlobalLayout>
+  <JButtonList buttonList={sortedVoice} client:load />
+</TopLayout>

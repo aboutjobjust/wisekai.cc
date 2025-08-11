@@ -1,15 +1,20 @@
 ---
+import GlobalLayout from './GlobalLayout.astro';
 import TopTagList from '@components/top/TopTagList.astro';
 import TopBanner from '@components/top/TopBanner.astro';
 
-interface Props {
+import type { ComponentProps } from 'astro/types';
+
+interface Props extends ComponentProps<typeof GlobalLayout> {
   count: number;
 }
 
-const { count } = Astro.props;
+const { count, ...rest } = Astro.props;
 ---
 
-<TopBanner />
-<h1 class="mb-3 text-xl font-bold text-gray-600">ボタン一覧（{count}個）</h1>
-<TopTagList />
-<slot />
+<GlobalLayout {...rest}>
+  <TopBanner slot="before-main" />
+  <h1 class="mb-3 text-xl font-bold text-gray-600">ボタン一覧（{count}個）</h1>
+  <TopTagList />
+  <slot />
+</GlobalLayout>
